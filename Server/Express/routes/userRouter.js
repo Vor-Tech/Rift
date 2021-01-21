@@ -224,7 +224,7 @@ router.delete("/:sender/relationships/:recipient", async (req, res) => { //remov
 });
 
 //block
-router.patch("/:sender/relationships/:recipient/block", (req, res) => {
+router.patch("/:sender/relationships/:recipient/block", async (req, res) => {
     const sender = req.params.sender;
     const recipient = req.params.recipient;
 
