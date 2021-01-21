@@ -1,9 +1,8 @@
 import express from 'express';
 const router = express.Router();
-import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import auth from "../middleware/auth";
-import Role from "../../models/roleModel";
+import auth from "../middleware/auth.js";
+import Role from "../../models/roleModel.js";
 
 const administrator = [
     "add_widgets",

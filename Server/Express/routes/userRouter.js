@@ -206,20 +206,22 @@ router.delete("/:sender/relationships/:recipient", async (req, res) => { //remov
         }
     });;
 
-    let updatedSender = await User.findByIdAndUpdate({id: sender}, {
+    let resSender = await User.findByIdAndUpdate({id: sender}, {
         $set: {friends: senderFriends}
     }).catch(err => {
         console.log('[',new Date().toUTCString(),']', err)
         return res.status(400).json({msg: "Internal server error.", reason: err})
     });
 
-    let updatedRecipient = await User.findOneAndUpdate({id: recipient}, {
+    let resRecipient = await User.findOneAndUpdate({id: recipient}, {
         $set: {friends: recipientFriends}
     }).catch(err => {
         console.log('[',new Date().toUTCString(),']', err)
         return res.status(400).json({msg: "Internal server error.", reason: err})
     });
 
+    if(!resSender || !resRecipient) return res.status(400).json({msg: "Internal server error"});
+    
     return res.status(200);
 });
 
