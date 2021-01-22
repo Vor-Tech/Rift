@@ -1,11 +1,11 @@
 [package]
-name = "webrtc_nifs"
+name = "turnx_nifs"
 version = "0.1.0"
 authors = ["Roland Metivier <metivier.roland@chlorophyt.us>"]
 edition = "2018"
 
 [lib]
-name = "webrtc_nifs"
+name = "turnx_nifs"
 path = "src/lib.rs"
 crate-type = ["dylib"]
 
@@ -13,3 +13,4 @@ crate-type = ["dylib"]
 rustler = "0.21.1"
 lazy_static = "1.0"
 libvpx-native-sys = "5.0"
+srtp2-sys = "3.0"

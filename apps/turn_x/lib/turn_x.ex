@@ -1,6 +1,6 @@
-defmodule Webrtc do
+defmodule TurnX do
   @moduledoc """
-  Documentation for `Webrtc`.
+  Documentation for `TurnX`.
   """
 
   @doc """
@@ -8,7 +8,7 @@ defmodule Webrtc do
 
   ## Examples
 
-      iex> Webrtc.hello()
+      iex> TurnX.hello()
       :world
 
   """

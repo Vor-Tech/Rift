@@ -1,4 +1,6 @@
-# NIF for Elixir.Webrtc
+# NIF for Elixir.TurnX
+
+Requires `libvpx-devel` and `libsrtp2-devel`.
 
 ## To build the NIF module:
 
@@ -9,8 +11,8 @@
 ## To load the NIF:
 
 ```elixir
-defmodule Webrtc do
-    use Rustler, otp_app: <otp-app>, crate: "webrtc_nifs"
+defmodule TurnX do
+    use Rustler, otp_app: <otp-app>, crate: "turnx_nifs"
 
     # When your NIF is loaded, it will override this function.
     def add(_a, _b), do: :erlang.nif_error(:nif_not_loaded)

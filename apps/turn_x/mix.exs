@@ -1,9 +1,9 @@
-defmodule Webrtc.MixProject do
+defmodule TurnX.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :webrtc,
+      app: :turn_x,
       version: "0.1.0",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
@@ -14,7 +14,7 @@ defmodule Webrtc.MixProject do
       deps: deps(),
       compilers: [:rustler] ++ Mix.compilers(),
       rustler_crates: [
-        webrtc_nifs: [
+        turnx_nifs: [
           mode: if(Mix.env() == :prod, do: :release, else: :debug)
         ]
       ]
@@ -25,7 +25,7 @@ defmodule Webrtc.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {Webrtc.Application, []}
+      mod: {TurnX.Application, []}
     ]
   end
 

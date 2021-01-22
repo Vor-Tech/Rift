@@ -20,13 +20,12 @@ erl_crash.dump
 *.ez
 
 # Ignore package tarball (built via "mix hex.build").
-webrtc-*.tar
+turn_x-*.tar
 
 
 # Temporary files for e.g. tests
 /tmp
 
-# Ignore Rust temporary files
-native/*/target
-native/*/.cargo
 priv/
+.cargo/
+target/
