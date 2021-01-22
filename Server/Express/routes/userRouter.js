@@ -35,17 +35,22 @@ router.post("/register", async (req,res) => {
 
         let id = (Date.now() + process.pid + userIncrement);
         console.log("id",id);
-        let descriminator = Math.floor(Math.random()*90000) + 10000;
+        let discriminator = Math.floor(Math.random()*90000) + 10000;
         const newUser = new User({
             id,
             email,
             password: passwordHash,
             displayName,
-            descriminator,
+            discriminator,
             createdAt: `[${new Date().toUTCString()}]`
         });
 
         const savedUser = await newUser.save();
+        let resUser;
+        resUser.id = savedUser.id;
+        resUser.email = savedUser.email;
+        resUser.displayName = savedUser.displayName;
+        resUser.discriminator
         res.json(savedUser);
     }
     catch (err) {
