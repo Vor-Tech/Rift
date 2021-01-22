@@ -132,22 +132,29 @@ router.post("/:sender/relationships/:recipient/pending", async (req, res) => {
     const sender = req.params.sender;
     const recipient = req.params.recipient;
 
+    console.log(sender, recipient);
+
     const newFriendRequest = new FriendRequest({
         date: new Date().toUTCString(),
         from_to: [sender, recipient]
     });
 
     let senderObj = await User.findOne({id: sender});
-    let senderUpdatedRequests = senderObj.friend_requests.push(newFriendRequest);
+    try{
+        let senderUpdatedRequests = senderObj.friend_requests.push(newFriendRequest)
+        
+        let recipientObj = await User.findOne({id: recipient});
+        let recipientUpdatedRequests = recipientObj.friend_requests.push(newFriendRequest);
 
-    let recipientObj = await User.findOne({id: recipient});
-    let recipientUpdatedRequests = recipientObj.friend_requests.push(newFriendRequest);
+        let resSender = await User.findOneAndUpdate({id: sender}, {$set: {friend_requests: senderUpdatedRequests}});
+        let resRecipient = await User.findOneAndUpdate({id: recipient}, {$set: {friend_requests: recipientUpdatedRequests}})
 
-    let resSender = await User.findOneAndUpdate({id: sender}, {$set: {friend_requests: senderUpdatedRequests}});
-    let resRecipient = await User.findOneAndUpdate({id: recipient}, {$set: {friend_requests: recipientUpdatedRequests}})
-
-    if(!resSender || ! resRecipient) return res.status(400).json({msg: "Internal server error."});
-    return res.status(200).json(resSender.friend_requests);
+        if(!resSender || ! resRecipient) return res.status(400).json({msg: "Internal server error."});
+        return res.status(200).json(resSender.friend_requests);
+    }
+    catch (err) {
+        console.log(err);
+    }
 });
 
 //cancel friend request
@@ -204,7 +211,7 @@ router.delete("/:sender/relationships/:recipient", async (req, res) => { //remov
         if(friend.id == sender){
             object.splice(idx, 1);
         }
-    });;
+    });
 
     let resSender = await User.findByIdAndUpdate({id: sender}, {
         $set: {friends: senderFriends}
