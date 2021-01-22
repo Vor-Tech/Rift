@@ -8,6 +8,8 @@ import auth from "../middleware/auth.js";
 import User from "../../models/userModel.js";
 import FriendRequest from "../../models/friendRequestModel.js";
 
+let userIncrement = 0;
+
 router.post("/register", async (req,res) => {
     try {
         let { email, password, passwordCheck, displayName } = req.body;
@@ -28,11 +30,18 @@ router.post("/register", async (req,res) => {
         const passwordHash = await bcrypt.hash(password, salt)
 
         //user gen
+        //generate id
+        userIncrement++;
 
+        let id = (Date.now() + process.pid + userIncrement);
+        console.log("id",id);
+        let descriminator = Math.floor(Math.random()*90000) + 10000;
         const newUser = new User({
+            id,
             email,
             password: passwordHash,
             displayName,
+            descriminator,
             createdAt: `[${new Date().toUTCString()}]`
         });
 
@@ -273,6 +282,7 @@ router.patch("/:sender/relationships/:recipient/block", async (req, res) => {
 
 });
 
+//refactor
 router.delete("/:sender/relationships/:recipient", async (req, res) => {
     const sender = req.params.sender;
     const recipient = req.params.recipient;
