@@ -13,4 +13,3 @@ crate-type = ["dylib"]
 rustler = "0.21.1"
 lazy_static = "1.0"
 libvpx-native-sys = "5.0"
-srtp2-sys = { features = ["build-openssl"], version = "3.0" }
