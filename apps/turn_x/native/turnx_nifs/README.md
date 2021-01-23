@@ -1,6 +1,6 @@
 # NIF for Elixir.TurnX
 
-Requires `libvpx-devel` and `libsrtp2-devel`.
+Requires `libvpx-devel`, a C/C++ toolchain, and `OpenSSL=devel`
 
 ## To build the NIF module:
 

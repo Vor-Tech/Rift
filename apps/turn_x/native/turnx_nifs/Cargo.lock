@@ -95,6 +95,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf1de2fe8c75bc145a2f577add951f8134889b4795d47466a54a5c846d691693"
 
 [[package]]
+name = "cc"
+version = "1.0.66"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4c0496836a84f8d0495758516b8621a622beb77c0fed418570e50764093ced48"
+
+[[package]]
 name = "cexpr"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -282,6 +288,29 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a9a7ab5d64814df0fe4a4b5ead45ed6c5f181ee3ff04ba344313a6c80446c5d4"
 
 [[package]]
+name = "openssl-src"
+version = "111.13.0+1.1.1i"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "045e4dc48af57aad93d665885789b43222ae26f4886494da12d1ed58d309dcb6"
+dependencies = [
+ "cc",
+]
+
+[[package]]
+name = "openssl-sys"
+version = "0.9.60"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "921fc71883267538946025deffb622905ecad223c28efbfdef9bb59a0175f3e6"
+dependencies = [
+ "autocfg",
+ "cc",
+ "libc",
+ "openssl-src",
+ "pkg-config",
+ "vcpkg",
+]
+
+[[package]]
 name = "peeking_take_while"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -429,6 +458,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8ccbdbf0ff2cd13eb5b389cb2f17da0b212b59651282a96084ce657da4d27a81"
 dependencies = [
  "bindgen",
+ "openssl-sys",
  "pkg-config",
  "vcpkg",
 ]
