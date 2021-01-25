@@ -1,8 +1,9 @@
 defmodule TurnXTest do
   use ExUnit.Case
-  doctest TurnX
 
-  test "greets the world" do
-    assert TurnX.hello() == :world
+  test "ports are working" do
+    port = Port.open({:spawn, Path.join([:code.priv_dir(:turn_x), "turnx_vpx"])}, [:binary])
+    Port.command(port, "hello Erlang")
+    Port.close(port)
   end
 end

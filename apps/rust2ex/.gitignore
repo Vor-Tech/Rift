@@ -20,10 +20,8 @@ erl_crash.dump
 *.ez
 
 # Ignore package tarball (built via "mix hex.build").
-turn_x-*.tar
+rust2ex-*.tar
 
 
 # Temporary files for e.g. tests
 /tmp
-
-priv/
