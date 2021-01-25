@@ -19,24 +19,27 @@ pub struct Compander {
 
 impl Compander {
     pub unsafe fn new() -> Compander {
+        println!("1");
         let iface_cx: *mut vpx_sys::vpx_codec_iface_t = vpx_sys::vpx_codec_vp9_cx();
         let iface_dx: *mut vpx_sys::vpx_codec_iface_t = vpx_sys::vpx_codec_vp9_dx();
         let mut codec_cx: vpx_sys::vpx_codec_ctx_t = std::mem::zeroed();
         let mut codec_dx: vpx_sys::vpx_codec_ctx_t = std::mem::zeroed();
-        let config_cx: vpx_sys::vpx_codec_enc_cfg_t = std::mem::zeroed();
-        let config_dx: vpx_sys::vpx_codec_dec_cfg_t = std::mem::zeroed();
+        let mut config_cx: vpx_sys::vpx_codec_enc_cfg_t = vpx_sys::vpx_codec_enc_cfg{};
+        let mut config_dx: vpx_sys::vpx_codec_dec_cfg_t = std::mem::zeroed();
 
+        println!("2");
         let cx_cfg_code = vpx_sys::vpx_codec_enc_config_default(iface_cx, &mut config_cx, 0);
+        assert_eq!(cx_cfg_code, vpx_sys::VPX_CODEC_OK);
 
+        println!("3");
         config_cx.rc_target_bitrate = DEFAULT_BITRATE;
         config_cx.g_error_resilient = 1;
 
-        assert_eq!(cx_cfg_code, vpx_sys::VPX_CODEC_OK);
-
+        println!("4");
         let cx_code = vpx_sys::vpx_codec_enc_init_ver(
             &mut codec_cx,
             iface_cx,
-            &config_cx,
+            &mut config_cx,
             0,
             vpx_sys::VPX_ENCODER_ABI_VERSION as i32,
         );
