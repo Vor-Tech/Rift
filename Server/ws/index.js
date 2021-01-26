@@ -5,7 +5,7 @@ const path = require('path');
 const uri = 'mongodb://localhost:27017';
 const port = 8080;
 
-const Message = require('../models/messageModel');
+const Message = require('../../Database/models/messageModel.js');
 const mongoose = require('mongoose');
 
 const http = require('http');

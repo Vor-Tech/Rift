@@ -3,8 +3,8 @@ const router = express.Router();
 
 import jwt from "jsonwebtoken";
 import auth from "../middleware/auth.js";
-import Bot from "../../models/botModel.js";
-import User from "../../models/userModel.js";
+import Bot from "../../../Database/models/botModel.js";
+import User from "../../../Database/models/userModel.js";
 import Axios from "axios";
 
 router.post("/create", async (req,res) => {

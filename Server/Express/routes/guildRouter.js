@@ -2,7 +2,7 @@ import express from 'express';
 const router = express.Router();
 
 import auth from "../middleware/auth.js";
-import {GuildModel as Guild, ChannelModel as Channel, RoleModel as Role, BotModel as Bot} from '../../models/modelBarrel.js';
+import {GuildModel as Guild, ChannelModel as Channel, RoleModel as Role, BotModel as Bot} from '../../../Database/models/modelBarrel.js';
 import Axios from "axios";
 
 //permission shorthands
@@ -60,23 +60,29 @@ router.post("/create", async (req,res) => {
 //   groups: Array,
 
         let {owner, token, name, logo, channels, roles} = req.body;
-        
-        if(!token) return res.status(400).json({msg: "No token provided"});
-        if(!owner) owner = Axios.get("http://localhost:5000/users/resToken", {"x-auth-token": token})
-
-        //validate
-        if(!owner) return res.status(400).json({msg: "Account error"})
-        if(name) name = `${owner.user.username}'s Server`;
-        if(logo) logo = (acronym) => {
-            guild_name.split(' ').array.forEach(word => {
-                acronym.push(word[0])                       //might want to fix this
+        let genAcronym = (acronym_var) => {
+            name.split(' ').forEach(word => {
+                acronym_var.push(word[0])                       //might want to fix this
             });
         };
 
+        if(!token) return res.status(400).json({msg: "No token provided"});
+        if(!owner) owner = Axios.get("http://localhost:5000/users/resToken", {"x-auth-token": token});
+        if(!owner) return res.status(400).json({msg: "Account error"});
+
+        //assign missing
+        if(!name) name = `${owner.user.username}'s Server`;
+        
+        let acronym = [];
+        genAcronym(acronym)
+
+        if(!logo) logo = acronym;
+
         newGuild = new Guild({
-            owner,
+            owner_id: owner.user.id,
             name,
             logo,
+            acronym,
             roles
         })
 

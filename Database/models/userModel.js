@@ -6,10 +6,11 @@ const userSchema = new mongoose.Schema({
     password: {type: String, required: true, minlength: 6},
     displayName: {type: String, required: true, minlength: 4},
     icon: {type: String},
-    discriminator: {type: Number, required: true, length: 5},
+    discriminator: {type: String, required: true, length: 5},
     blocked_users: {type: Array},
     friend_requests: {type: Array},
     friends: {type: [Object]},
+    created_at: {type: Date}
 });
 
 const User = mongoose.model("User", userSchema);

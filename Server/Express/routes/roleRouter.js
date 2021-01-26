@@ -2,7 +2,7 @@ import express from 'express';
 const router = express.Router();
 import jwt from "jsonwebtoken";
 import auth from "../middleware/auth.js";
-import Role from "../../models/roleModel.js";
+import Role from "../../../Database/models/roleModel.js";
 
 const administrator = [
     "add_widgets",

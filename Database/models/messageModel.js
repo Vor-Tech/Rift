@@ -2,7 +2,12 @@ import mongoose from "mongoose";
 const { Schema, model } = mongoose; 
 
 const messageSchema = new Schema({
-  author: {type: Object, required: true},
+  author: {type: {
+    displayName: String,
+    discriminator: String,
+    id: String,
+    icon: String,
+  }, required: true},
   content: {type: [Object], required: true},
   channel_id: {type: String, required: true},
   sent_at: Date,
