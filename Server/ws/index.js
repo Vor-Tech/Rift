@@ -28,13 +28,10 @@ app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
 
 io.on('connection', (socket) => {
   console.log('Connection');
-  
-  // Get the last 10 messages from the database.
-  console.log(Message);
   Message.find().sort({createdAt: -1}).exec((err, messages) => {
     if (err) return console.error(err);
 
-    // Send the last messages to the user.
+    // Send the messages to the user.
     socket.emit('init', messages);
   });
 

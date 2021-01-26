@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const friendRequestSchema = new mongoose.Schema({
+export const friendRequestSchema = new mongoose.Schema({
   date: Date,
   from_to: Array
 }, {

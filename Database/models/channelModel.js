@@ -1,10 +1,12 @@
 import mongoose from 'mongoose';
+import {userSchema as user} from "./userModel.js";
+import {botSchema as bot} from "./botModel.js";
 
-const channelSchema = new mongoose.Schema({
+export const channelSchema = new mongoose.Schema({
   guild_id: String,
   id: String,
   last_message_id: String,
-  instantiator: Object,
+  instantiator: {type: user || bot},
   type: {type: String},
   name: {type: String},
   topic: String,

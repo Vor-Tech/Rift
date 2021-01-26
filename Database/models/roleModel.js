@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const roleSchema = new mongoose.Schema({
+export const roleSchema = new mongoose.Schema({
   initiator: Object,
   name: {type: String, required: true},
   guild_id: {type: String, required: true},

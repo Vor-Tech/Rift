@@ -1,12 +1,15 @@
 import mongoose from 'mongoose';
+import {userSchema as user} from "./userModel.js";
 
-const botSchema = new mongoose.Schema({
-    owner: {type: Object, required: true},
-    displayName: {type: String, required: true},
+export const botSchema = new mongoose.Schema({
+    id: {type: String, required: true},
+    owner: {type: user, required: true},
+    displayName: {type: String, required: true, maxlength: 20},
+    discriminator: String,
     icon: String,
     intents: {type: Array, required: false},
-    createdAt: Date,
-    editedAt: [Object],
+    created_at: Date,
+    edited_at: [Object],
 });
 
 const Bot = mongoose.model("Bot", botSchema);

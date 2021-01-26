@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const riftSchema = new mongoose.Schema({
+export const riftSchema = new mongoose.Schema({
   owner: Object,
   name: String,
   acronym: String,

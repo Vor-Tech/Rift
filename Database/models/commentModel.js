@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const commentSchema = new mongoose.Schema({
+export const commentSchema = new mongoose.Schema({
   author: Object,
   content: Object,
   parent: String,

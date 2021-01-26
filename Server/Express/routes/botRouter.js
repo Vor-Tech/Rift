@@ -7,6 +7,8 @@ import Bot from "../../../Database/models/botModel.js";
 import User from "../../../Database/models/userModel.js";
 import Axios from "axios";
 
+let botIncrement = 0;
+
 router.post("/create", async (req,res) => {
     try {
         let { owner, token, botDisplayName, icon } = req.body;
@@ -28,7 +30,11 @@ router.post("/create", async (req,res) => {
         // editedAt: [Object],
         // id: String,
 
+        botIncrement++;
+        let id = (Date.now() + process.pid + botIncrement);
+        
         const newBot = new Bot({
+            id,
             owner,
             displayName: botDisplayName,
             icon,

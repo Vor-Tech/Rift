@@ -1,13 +1,9 @@
 import mongoose from "mongoose";
-const { Schema, model } = mongoose; 
+import {userSchema as user} from "./userModel.js"
+import {botSchema as bot} from "./botModel.js"
 
-const messageSchema = new Schema({
-  author: {type: {
-    displayName: String,
-    discriminator: String,
-    id: String,
-    icon: String,
-  }, required: true},
+export const messageSchema = new mongoose.Schema({
+  author: {type: user || bot, required: true},
   content: {type: [Object], required: true},
   channel_id: {type: String, required: true},
   sent_at: Date,
@@ -16,6 +12,6 @@ const messageSchema = new Schema({
   timestamps: true,
 });
 
-const Message = model('Message', messageSchema);
+const Message = mongoose.model('Message', messageSchema);
 
 export default Message;
