@@ -11,12 +11,14 @@ import mongoose from 'mongoose';
 import http from 'http';
 import * as socketIo from 'socket.io';
 const server = http.createServer(app);
-const io = socketIo(server, {
+const io = new socketIo.Server(server, {
   cors: {
     origin: 'http://localhost:3000',
     methods: ['GET', 'POST']
   }
 });
+
+
 
 mongoose.connect(uri, {
   useUnifiedTopology: true,
@@ -24,7 +26,7 @@ mongoose.connect(uri, {
   useCreateIndex: true
 });
 
-app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
+app.use(express.static(path.join(path.resolve(path.dirname('')), '..', 'client', 'build')));
 
 io.on('connection', (socket) => {
   console.log('Connection');
