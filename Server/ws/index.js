@@ -1,5 +1,5 @@
 import express from'express';
-const app = express();;
+const app = express();
 import path from 'path';
 
 const uri = 'mongodb://localhost:27017';
@@ -9,7 +9,7 @@ import Message from '../../Database/models/messageModel.js';
 import mongoose from 'mongoose';
 
 import http from 'http';
-import socketIo from 'socket.io';
+import * as socketIo from 'socket.io';
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
