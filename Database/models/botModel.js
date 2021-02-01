@@ -1,4 +1,3 @@
-import { Timestamp } from 'mongodb';
 import mongoose from 'mongoose';
 import {userSchema as user} from "./userModel.js";
 
