@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
-import { channelSchema } from './channelModel';
-import { roleSchema } from './roleModel';
-import { userSchema } from './userModel';
+import { channelSchema } from './channelModel.js';
+import { roleSchema } from './roleModel.js';
+import { userSchema } from './userModel.js';
 
 export const riftSchema = new mongoose.Schema({
   id: {type: String, required: true},
