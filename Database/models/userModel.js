@@ -9,8 +9,18 @@ export const userSchema = new mongoose.Schema({
     discriminator: {type: String, required: true, length: 5},
     blocked_users: {type: Array},
     friend_requests: {type: Array},
-    friends: {type: [Object]},
-    created_at: {type: Date}
+    friends: {type: 
+        [{
+            id: String,
+            displayName: String,
+            discriminators: String
+        }],
+        required: false
+    },
+    created_at: {type: Date},
+    edited_at: {type: [{
+        edit: [[Object, Date] /*original*/, [Object, Date] /*edited*/]
+      }], required: false}
 });
 
 const User = mongoose.model("User", userSchema);

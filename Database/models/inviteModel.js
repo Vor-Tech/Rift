@@ -4,11 +4,11 @@ import {botSchema as bot} from "./botModel.js";
 
 export const inviteSchema = new mongoose.Schema({
     instantiator: {type: user || bot, required: true},
-    target: String,
-    uses: Number || Infinity,
+    target: {type: String, required: true},
+    uses: {type: Number}, //if 0, no use expirey
     intents: {type: Array, required: false},
-    created_at: Date,
-    edited_at: [Object],
+    created_at: {type: Date, required: true},
+    expires_at: {type: Date, required: false},
 });
 
 const Invite = mongoose.model("Invite", inviteSchema);

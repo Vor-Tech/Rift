@@ -1,15 +1,15 @@
-const express = require('express');
+import express from'express';
 const app = express();;
-const path = require('path');
+import path from 'path';
 
 const uri = 'mongodb://localhost:27017';
 const port = 8080;
 
-const Message = require('../../Database/models/messageModel.js');
-const mongoose = require('mongoose');
+import Message from '../../Database/models/messageModel.js';
+import mongoose from 'mongoose';
 
-const http = require('http');
-const socketIo = require('socket.io');
+import http from 'http';
+import socketIo from 'socket.io';
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
