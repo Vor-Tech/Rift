@@ -13,14 +13,21 @@ export const userSchema = new mongoose.Schema({
         [{
             id: String,
             displayName: String,
-            discriminators: String
+            discriminators: String,
+            logo: String,
+            notes: String,
+            // badges: [Object],
+            // linkedAccounts: [Object]
         }],
         required: false
     },
     created_at: {type: Date},
     edited_at: {type: [{
         edit: [[Object, Date] /*original*/, [Object, Date] /*edited*/]
-      }], required: false}
+      }], required: false},
+    badges: {type: [Object]},
+    achievements: {type: [Object], required: false},
+    linkedAccounts: {type: [Object]}
 });
 
 const User = mongoose.model("User", userSchema);
