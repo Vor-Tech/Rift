@@ -11,11 +11,11 @@ const client = new cassandra.Client({
 
 async.series([
     //Connect to the Scylla cluster
-    connection = (next) => {
-        console.log(`Connecting to ${next}`);
+    function connect(next) {
+        console.log(`Connecting to server`);
         client.connect(next);
     },
-    select = (next) => {
+    function select(next) {
         const query = 'SELECT JSON * FROM test';
         client.execute(query, (err, result) => {
             //Return any error
@@ -31,21 +31,21 @@ async.series([
         });
     },
     
-    insert = (next) => {
+    function insert(next) {
         console.log(`Inserting user`);
         const query = 'INSERT INTO users (id, email, password, display_name, icon, discriminator, blocked_users, friend_requests, friends, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
         const params = ['1', 'admin@rift.works', 'insertChecksum', 'Riftmaster', 'insertUrl', '0000', [], [], [], Date.now()];
         client.execute(query, params, next)
     },
 
-    del = (next) => {
+    function del(next) {
         console.log('Removing user');
         const query = 'DELETE FROM users WHERE id = ? and email = ? and display_name = ?';
         const params = ['1', 'admin@rift.works', 'Riftmaster'];
         client.execute(query, params, next);
     },
 
-    client.shutdown(() => {
+    client.shutdown((err) => {
         console.log('Shutting down');
         if (err) {
             throw err;
