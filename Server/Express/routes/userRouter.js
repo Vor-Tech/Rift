@@ -10,7 +10,8 @@ import FriendRequest from "../../../Database/models/friendRequestModel.js";
 
 let userIncrement = 0;
 
-router.post("/register", async (req, res) => {
+//register user
+router.post("/", async (req, res) => {
     try {
         let { email, password, passwordCheck, displayName, icon } = req.body;
 
@@ -72,6 +73,7 @@ router.post("/register", async (req, res) => {
     }
 })
 
+//login
 router.post("/login", async (req, res) => {
     try {
         const {email, password} = req.body;
@@ -106,6 +108,7 @@ router.post("/login", async (req, res) => {
     }
 });
 
+//validate token
 router.get("/validate-token", async (req, res) => {
     try {
         const token = req.header("x-auth-token");
@@ -125,6 +128,7 @@ router.get("/validate-token", async (req, res) => {
     }
 })
 
+//resolve token to user
 router.get("/resolve-token", async (req, res) => {
     try {
         const token = req.header("x-auth-token");
@@ -151,7 +155,7 @@ router.get("/resolve-token", async (req, res) => {
 })
 
 //send friend request
-router.post("/:sender/relationships/:recipient/pending", async (req, res) => {
+router.post("/:sender/relationships/:recipient/pending", async (req, res) => { //TODO, make sure recipient does not have sender blocked
     const sender = req.params.sender;
     const recipient = req.params.recipient;
 
@@ -217,46 +221,46 @@ router.delete("/:sender/relationships/:recipient/pending", async (req, res) => {
     res.status(200);
 });
 
+//remove friend
+// router.delete("/:sender/relationships/:recipient", async (req, res) => { //remove friend
+//     const sender = req.params.sender;
+//     const recipient = req.params.recipient;
 
-router.delete("/:sender/relationships/:recipient", async (req, res) => { //remove friend
-    const sender = req.params.sender;
-    const recipient = req.params.recipient;
+//     let senderObj = await User.findOne({id: sender});
+//     let senderFriends = senderObj.friends.forEach((friend, idx, object) => {
+//         if(friend.id == recipient){
+//             object.splice(idx, 1);
+//         }
+//     });
 
-    let senderObj = await User.findOne({id: sender});
-    let senderFriends = senderObj.friends.forEach((friend, idx, object) => {
-        if(friend.id == recipient){
-            object.splice(idx, 1);
-        }
-    });
+//     let recipientObj = await User.findOne({id: recipient});
+//     let recipientFriends = recipientObj.friends.forEach((friend, idx, object) => {
+//         if(friend.id == sender){
+//             object.splice(idx, 1);
+//         }
+//     });
 
-    let recipientObj = await User.findOne({id: recipient});
-    let recipientFriends = recipientObj.friends.forEach((friend, idx, object) => {
-        if(friend.id == sender){
-            object.splice(idx, 1);
-        }
-    });
+//     let resSender = await User.findByIdAndUpdate({id: sender}, {
+//         $set: {friends: senderFriends}
+//     }).catch(err => {
+//         console.log('[',new Date().toUTCString(),']', err)
+//         return res.status(400).json({msg: "Internal server error.", reason: err})
+//     });
 
-    let resSender = await User.findByIdAndUpdate({id: sender}, {
-        $set: {friends: senderFriends}
-    }).catch(err => {
-        console.log('[',new Date().toUTCString(),']', err)
-        return res.status(400).json({msg: "Internal server error.", reason: err})
-    });
+//     let resRecipient = await User.findOneAndUpdate({id: recipient}, {
+//         $set: {friends: recipientFriends}
+//     }).catch(err => {
+//         console.log('[',new Date().toUTCString(),']', err)
+//         return res.status(400).json({msg: "Internal server error.", reason: err})
+//     });
 
-    let resRecipient = await User.findOneAndUpdate({id: recipient}, {
-        $set: {friends: recipientFriends}
-    }).catch(err => {
-        console.log('[',new Date().toUTCString(),']', err)
-        return res.status(400).json({msg: "Internal server error.", reason: err})
-    });
-
-    if(!resSender || !resRecipient) return res.status(400).json({msg: "Internal server error"});
+//     if(!resSender || !resRecipient) return res.status(400).json({msg: "Internal server error"});
     
-    return res.status(200);
-});
+//     return res.status(200);
+// });
 
 //block
-router.patch("/:sender/relationships/:recipient/block", async (req, res) => {
+router.post("/:sender/relationships/:recipient/block", async (req, res) => {
     const sender = req.params.sender;
     const recipient = req.params.recipient;
 
@@ -296,7 +300,7 @@ router.patch("/:sender/relationships/:recipient/block", async (req, res) => {
 
 });
 
-//refactor
+//refactor of remove friend
 router.delete("/:sender/relationships/:recipient", async (req, res) => {
     const sender = req.params.sender;
     const recipient = req.params.recipient;
@@ -329,30 +333,41 @@ router.delete("/:sender/relationships/:recipient", async (req, res) => {
     return res.status(200);
 });
 
+//get basic user data
 router.get("/", auth, async (req, res) => {
-    const user = await User.findById(req.user);
+    const user = await User.find({id: req.id});
     try{
     res.json({
         icon: user.icon,
         displayName: user.displayName,
-        id: user.id,
+        discriminator: user.discriminator
     });
     }
-    catch(err){res.status(400).json({msg:"Internal server error"})}
+    catch(err){res.status(500).json({msg:"Internal server error"})}
 });
 
-
+//delete user
 router.delete("/", auth, async (req, res) => {
     try{
-        console.log(req.user)
-        const deletedUser = await User.findByIdAndDelete(req.user);
-        let resUser = {
-            id: deletedUser.id,
-            email: deletedUser.email,
-            displayName: deletedUser.displayName,
-            discriminator: deletedUser.discriminator
-        } 
-        res.json(resUser);
+        const {id, password} = req.body;
+        if(!password) return res.status(400).json({msg: "No password was supplied"});
+
+        const passMatch = await bcrypt.compare(password, user.password);
+        if(!passMatch) return res.status(400).json({msg: "Invalid credentials."});
+        
+        const token = jwt.sign({id: user._id}, process.env.JWT_SECRET);
+
+        if(passMatch === true) {
+            const deletedUser = await User.findOneAndDelete({id: req.id});
+            let resUser = {
+                id: deletedUser.id,
+                email: deletedUser.email,
+                displayName: deletedUser.displayName,
+                discriminator: deletedUser.discriminator
+            } 
+            res.json(resUser);
+        }
+        
     }
     catch (err) {
         res.status(500).json({error: "Internal server error"})

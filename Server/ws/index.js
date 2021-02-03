@@ -1,40 +1,42 @@
-const express = require('express');
-const app = express();;
-const path = require('path');
+import express from'express';
+const app = express();
+import path from 'path';
 
 const uri = 'mongodb://localhost:27017';
 const port = 8080;
 
-const Message = require('../../Database/models/messageModel.js');
-const mongoose = require('mongoose');
+import Message from '../../Database/models/messageModel.js';
+import mongoose from 'mongoose';
 
-const http = require('http');
-const socketIo = require('socket.io');
+import http from 'http';
+import * as socketIo from 'socket.io';
 const server = http.createServer(app);
-const io = socketIo(server, {
+const io = new socketIo.Server(server, {
   cors: {
     origin: 'http://localhost:3000',
     methods: ['GET', 'POST']
   }
 });
 
+
+
 mongoose.connect(uri, {
   useUnifiedTopology: true,
   useNewUrlParser: true,
   useCreateIndex: true
+}, (err) => {
+  if(err) throw err;
+  console.log("MongoDB Connected");
 });
 
-app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
+app.use(express.static(path.join(path.resolve(path.dirname('')), '..', 'client', 'build')));
 
 io.on('connection', (socket) => {
   console.log('Connection');
-  
-  // Get the last 10 messages from the database.
-  console.log(Message);
   Message.find().sort({createdAt: -1}).exec((err, messages) => {
     if (err) return console.error(err);
 
-    // Send the last messages to the user.
+    // Send the messages to the user.
     socket.emit('init', messages);
   });
 
