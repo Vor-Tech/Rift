@@ -52,7 +52,7 @@ io.on('connection', (socket) => {
 
     // Save the message to the database.
     message.save((err) => {
-      if (err) return console.error(err);
+      if (err) return console.log(err);
     });
 
     // Notify all other users about a new message.

@@ -41,7 +41,7 @@ router.post("/", async (req, res) => {
         let id = (Date.now() + process.pid + userIncrement);
 
         //generate discriminator
-        let discriminator = Math.floor(Math.random()*90000) + 10000;
+        let discriminator = (Math.floor(Math.random() * 10000) + 10000).toString().substring(1);
 
         //create new user object
         const newUser = new User({
@@ -340,7 +340,8 @@ router.get("/", auth, async (req, res) => {
     res.json({
         icon: user.icon,
         displayName: user.displayName,
-        discriminator: user.discriminator
+        discriminator: user.discriminator,
+        id: user.id
     });
     }
     catch(err){res.status(500).json({msg:"Internal server error"})}
