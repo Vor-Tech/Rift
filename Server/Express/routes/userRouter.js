@@ -135,6 +135,7 @@ router.get("/resolve-token", async (req, res) => {
         if(!token) return res.json({token_provided: false});
 
         const verified = jwt.verify(token, process.env.JWT_SECRET);
+        console.log(verified);
         if(!verified) return res.json({valid_token: false});
 
         const user = await User.findById(verified.id);

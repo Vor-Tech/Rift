@@ -1,16 +1,16 @@
 import mongoose from "mongoose";
 const { Schema, model } = mongoose; 
 
-const messageSchema = new Schema({
+export const messageSchema = new Schema({
   author: {type: {
-    displayName: String,
-    discriminator: String,
-    id: String,
+    displayName: {type: String, unique: false},
+    discriminator: {type: String, unique: false},
+    id: {type: String, unique: false},
     // icon: String,
-  }, required: false},
+  }, unique: false},
   content: {type: [Object], required: true},
   channel_id: {type: String, required: true},
-  sent_at: Date,
+  sent_at: {type: Date},
   edited_at: [Date]
 }, {
   timestamps: true,
