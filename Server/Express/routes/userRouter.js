@@ -1,3 +1,8 @@
+//TODO
+/*
+Commendations
+*/
+
 import express from 'express';
 const router = express.Router();
 
@@ -336,15 +341,49 @@ router.delete("/:sender/relationships/:recipient", async (req, res) => {
 
 //get basic user data
 router.get("/", auth, async (req, res) => {
-    const user = await User.find({id: req.id});
-    try{
-    res.json({
-        icon: user.icon,
-        displayName: user.displayName,
-        discriminator: user.discriminator,
-        id: user.id
-    });
+    if(!req.id && !req.token) return res.status(400).json({msg: "No token or ID provided"});
+    
+    let user;
+
+    if(req.header("id")){
+        try{
+            let id = req.header("id");
+            user = await User.find({id}).data;
+        }
+        catch{
+            res.status(500).json({error: "Internal server error"})
+            console.error(`[${new Date().toLocaleTimeString()}], ID ERR:`, err)
+        }
     }
+
+    if(req.header("x-auth-token")) {
+        try {
+            token = req.header("x-auth-token");
+            if(!token) return res.json({msg: "No token found"});
+    
+            const verified = jwt.verify(token, process.env.JWT_SECRET);
+            if(!verified) return res.json({msg: "Provided token is invalid"});
+    
+            user = await User.findById(verified.id);
+            if(!user) return res.status(404).json({msg: "User not found"});
+    
+            return res.json(true);
+        }
+        catch (err) {
+            res.status(500).json({error: "Internal server error"})
+            console.error(`[${new Date().toLocaleTimeString()}], TOKEN ERR:`, err)
+        }
+    }
+        
+    try{
+        res.json({
+            icon: user.icon,
+            displayName: user.displayName,
+            discriminator: user.discriminator,
+            id: user.id
+        });
+    }
+        
     catch(err){res.status(500).json({msg:"Internal server error"})}
 });
 

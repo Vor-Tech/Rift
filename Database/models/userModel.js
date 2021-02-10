@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
     displayName: {type: String, required: true, minlength: 4},
     icon: {type: String},
     discriminator: {type: String, required: true, length: 5},
+    commendations: {type: Object},
     blocked_users: {type: Array},
     friend_requests: {type: Array},
     friends: {type: [Object]},
