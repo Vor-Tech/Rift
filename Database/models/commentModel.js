@@ -1,15 +1,16 @@
 import mongoose from 'mongoose';
+import messageSchema from './messageModel.js'
 
 const commentSchema = new mongoose.Schema({
-  author: Object,
-  content: Object,
-  parent: String,
-  children: Array,
-  reactions: [Object],
-  awards: [Object],
-  filteredRoles: Array,
-  createdAt: Date,
-  editedAt: [Date]
+  author: {type: messageSchema.author},
+  content: {type: messageSchema.content},
+  parent_id: {type: String},
+  children: {type: [String]},
+  reactions: {type: [Object]},
+  awards: {type: [Object]},
+  filteredRoles: {type: [String]},
+  createdAt: {type: Date},
+  editedAt: {type: [Date]},
 }, {
   timestamps: true,
 });

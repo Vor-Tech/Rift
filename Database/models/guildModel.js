@@ -1,24 +1,25 @@
 import mongoose from 'mongoose';
+import roleSchema from '../schema/roleSchema.js'
 
 const guildSchema = new mongoose.Schema({
-  id: String,
-  owner_id: String,
-  name: String,
-  region: String,
-  acronym: String,
-  icon: String,
-  banner: String,
-  groups: Array,
-  verification_level: Number,
-  sub_groups: Array,
-  channels: Array,
-  default_channel: Object,
-  members: Array,
-  emojis: [Object],
-  invites: [Object],
-  roles: [Object],
-  created_at: Date,
-  edited_at: [Date]
+  id: {type: String},
+  owner_id: {type: String},
+  name: {type: String},
+  region: {type: String},
+  acronym: {type: String},
+  icon: {type: String},
+  banner: {type: String},
+  groups: {type: [Object]},
+  verification_level: {type: Number},
+  sub_groups: {type: [Object]},
+  channels: {type: [Object]},
+  default_channel: {type: String},
+  members: {type: [String]},
+  emojis: {type: [Object]},
+  invites: {type: [Object]},
+  roles: {type: [roleSchema]},
+  created_at: {type: Date},
+  edited_at: {type: [Date]}
 }, {
   timestamps: true,
 });

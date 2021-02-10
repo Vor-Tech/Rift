@@ -1,20 +1,20 @@
 import mongoose from 'mongoose';
 
 const riftSchema = new mongoose.Schema({
-  owner: Object,
-  name: String,
-  acronym: String,
-  riftLogo: String,
-  riftBanner: String,
-  members: [Object],
-  channels: [Object],
-  tags: [Object],
-  flares: [Object],
-  emojis: [Object],
-  public: Boolean,
-  roles: [Object],
-  createdAt: Date,
-  editedAt: [Date]
+  owner: {type: Object},
+  name: {type: String},
+  acronym: {type: String},
+  riftLogo: {type: String},
+  riftBanner: {type: String},
+  members: {type: [Object]},
+  channels: {type: [Object]},
+  tags: {type: [Object]},
+  flares: {type: [Object]},
+  emojis: {type: [Object]},
+  public: {type: Boolean},
+  roles: {type: [Object]},
+  createdAt: {type: Date},
+  editedAt: {type: [Date]}
 }, {
   timestamps: true,
 });

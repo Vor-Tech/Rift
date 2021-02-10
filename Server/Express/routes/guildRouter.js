@@ -26,6 +26,8 @@ const Everyone = new Role({
     permissions: [...default_permissions]
 })
 
+let Jaq = Bot.findById("5fff26ac29100a2938911429")
+
 //default channel declarations
 let GeneralText = new Channel({
     name: "General",
@@ -38,10 +40,13 @@ let GeneralText = new Channel({
     invites: [null] /*[Object]*/,
     messages: [
         {
-            author: Bot.findById("5fff26ac29100a2938911429"),
-            content: `Welcome to text channel, General`,
+            author: {
+                displayName: 'Jaq',
+                discriminator: '0000',
+                icon: Jaq.icon
+            },
+            content: [`Welcome to text channel, General`],
             sent_at: new Date().toUTCString(),
-            //id
         }
     ],
     createdAt: new Date().toUTCString(),
