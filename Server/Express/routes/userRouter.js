@@ -129,7 +129,7 @@ router.get("/validate-token", async (req, res) => {
 })
 
 //resolve token to user
-router.get("/resolve-token", async (req, res) => {
+router.get("/resolve-token-full", async (req, res) => {
     try {
         const token = req.header("x-auth-token");
         if(!token) return res.json({token_provided: false});
@@ -144,8 +144,15 @@ router.get("/resolve-token", async (req, res) => {
             icon: user.icon,
             id: user.id,
             email: user.email,
+            blocked_users: user.blocked_users,
+            achievements: user.achievements,
             displayName: user.displayName,
-            discriminator: user.discriminator
+            discriminator: user.discriminator,
+            badges: user.badges,
+            friend_requests: user.friend_requests,
+            friends: user.friends,
+            updated_at: user.updated_at,
+            created_at: user.created_at
         } 
         res.json(resUser);
     }
@@ -155,32 +162,85 @@ router.get("/resolve-token", async (req, res) => {
     }
 })
 
-//send friend request
-router.post("/:sender/relationships/:recipient/pending", async (req, res) => { //TODO, make sure recipient does not have sender blocked
+//resolve id to user
+router.get("/resolve-id", async (req, res) => {
+    try {
+        const id = req.header("id");
+        if(!id) return res.json({id_provided: false});
+
+        const user = await User.find({id});
+        
+        if(!user) return res.json({valid_id: false});
+
+        let resUser = {
+            icon: user.icon,
+            id: user.id,
+            displayName: user.displayName,
+            discriminator: user.discriminator,
+            created_at: user.created_at,
+            badges: user.badges,
+            achievements: user.achievements
+        } 
+        res.json(resUser);
+    }
+    catch (err) {
+        res.status(500).json({error: "Internal server error"})
+        console.error(`[${new Date().toLocaleTimeString()}]`, err)
+    }
+})
+
+//send/accept friend request
+router.post("/:sender/relationships/:recipient/pending", async (req, res) => { //TODO, actually test this to make sure it works
     const sender = req.params.sender;
     const recipient = req.params.recipient;
 
-    console.log(sender, recipient);
+    let senderObj = await User.findOne({id: sender});
+    let recipientObj = await User.findOne({id: recipient});
+
+    if(!senderObj || !recipientObj) return res.status(400).json({msg: "Bad sender or recipient ID"});
+
+    if(recipientObj.friends.contains(sender) && senderObj.friends.contains(recipient)) return res.json({msg: 'Already friends.'})
+
+
+    let cannotSend = 'You cannot send a friend requset to this user because'; 
+
+    if(recipientObj.blocked_users.includes(sender)) return res.json({msg: `${cannotSend} they have blocked you.`});
+    if(senderObj.blocked_users.includes(recipient)) return res.json({msg: `${cannotSend} you have blocked them.`});
+
+    if(recipientObj.friends_requests.to.includes(sender)) {
+        let recipientUpdatedFriends = recipientObj.friends.push(sender);
+        let senderUpdatedFriends = senderObj.friends.push(recipient);
+
+        try {
+            let resSender = await User.findOneAndUpdate({id: sender}, {$set: {friends: senderUpdatedFriends}});
+            let resRecipient = await User.findOneAndUpdate({id: recipient}, {$set: {friends: recipientUpdatedFriends}});
+
+            if(!resSender || !resRecipient) return res.status(500).json({msg: "Internal server error."});
+            else return res.status(200).json({msg: "Mutual requests, adding friends."});
+        } catch (err) {
+            return res.status(500).json({msg: "Internal server error."})
+        }
+    }
 
     const newFriendRequest = new FriendRequest({
         date: new Date().toUTCString(),
-        from_to: [sender, recipient]
+        from: sender,
+        to: recipient
     });
-
-    let senderObj = await User.findOne({id: sender});
-    try{
+    
+    try {
         let senderUpdatedRequests = senderObj.friend_requests.push(newFriendRequest)
         
-        let recipientObj = await User.findOne({id: recipient});
         let recipientUpdatedRequests = recipientObj.friend_requests.push(newFriendRequest);
 
         let resSender = await User.findOneAndUpdate({id: sender}, {$set: {friend_requests: senderUpdatedRequests}});
         let resRecipient = await User.findOneAndUpdate({id: recipient}, {$set: {friend_requests: recipientUpdatedRequests}})
 
-        if(!resSender || ! resRecipient) return res.status(400).json({msg: "Internal server error."});
-        return res.status(200).json(resSender.friend_requests);
+        if(!resSender || !resRecipient) return res.status(500).json({msg: "Internal server error."});
+        return res.json({"sent": resSender.friend_requests.to.contains(recipient)});
     }
     catch (err) {
+        res.status(500).json({msg: "Internal server error."});
         console.log(err);
     }
 });

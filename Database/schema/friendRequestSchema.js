@@ -2,7 +2,8 @@ import mongoose from 'mongoose';
 
 const friendRequestSchema = new mongoose.Schema({
   date: {type: Date},
-  from_to: {type: Array}
+  to: {type: String},
+  from: {type: String}
 }, {
   timestamps: true,
 });

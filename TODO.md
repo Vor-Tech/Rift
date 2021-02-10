@@ -1,8 +1,9 @@
 - [ ] Implement ID generation for all applicable routers
-- [ ] Flesh out the APIs
+- [ ] Flesh out the APIs [In Progress]
 - [ ] Convert schemas 
 - [ ] Implement WebRTC
 - [ ] Convert WebSocket server to Plug Cowboy
-- [ ] Get friends list working
+- [ ] Get friends list working [Pending Testing]
 - [ ] Get guilds working
 - [ ] Get channels working
+- [ ] Add status checking for friend manipulation
