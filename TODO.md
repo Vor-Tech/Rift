@@ -3,7 +3,9 @@
 - [ ] Convert schemas 
 - [ ] Implement WebRTC
 - [ ] Convert WebSocket server to Plug Cowboy
-- [ ] Get friends list working [Pending Testing]
+- [ ] Get friends list working [In Progress]
+    - If mutual requests are present, remove them and add opposite users ID to friends array
+    - If one person cancels or declines the request, remove it from both and send the opposite user a notification
 - [ ] Get guilds working
 - [ ] Get channels working
 - [ ] Add status checking for friend manipulation

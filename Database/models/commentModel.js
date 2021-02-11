@@ -2,8 +2,8 @@ import mongoose from 'mongoose';
 import messageSchema from './messageModel.js'
 
 const commentSchema = new mongoose.Schema({
-  author: {type: messageSchema.author},
-  content: {type: messageSchema.content},
+  author: {type: Object},
+  content: {type: Array},
   parent_id: {type: String},
   children: {type: [String]},
   reactions: {type: [Object]},

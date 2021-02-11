@@ -194,12 +194,16 @@ router.post("/:sender/relationships/:recipient/pending", async (req, res) => { /
     const sender = req.params.sender;
     const recipient = req.params.recipient;
 
+    // const token = req.header("x-auth-token");
+
     let senderObj = await User.findOne({id: sender});
     let recipientObj = await User.findOne({id: recipient});
+    let sent;
+    let containsRequest;
 
     if(!senderObj || !recipientObj) return res.status(400).json({msg: "Bad sender or recipient ID"});
 
-    if(recipientObj.friends.contains(sender) && senderObj.friends.contains(recipient)) return res.json({msg: 'Already friends.'})
+    if(recipientObj.friends.includes(sender) && senderObj.friends.contains(recipient)) return res.json({msg: 'Already friends.'})
 
 
     let cannotSend = 'You cannot send a friend requset to this user because'; 
@@ -207,9 +211,12 @@ router.post("/:sender/relationships/:recipient/pending", async (req, res) => { /
     if(recipientObj.blocked_users.includes(sender)) return res.json({msg: `${cannotSend} they have blocked you.`});
     if(senderObj.blocked_users.includes(recipient)) return res.json({msg: `${cannotSend} you have blocked them.`});
 
-    if(recipientObj.friends_requests.to.includes(sender)) {
+    if(recipientObj.friends_requests?.to.includes(sender)) {
         let recipientUpdatedFriends = recipientObj.friends.push(sender);
         let senderUpdatedFriends = senderObj.friends.push(recipient);
+        
+        const frIdx = recipientObj.friends_requests.indexOf({_id, date, from: sender, to: recipient})
+        console.log(frIdx);
 
         try {
             let resSender = await User.findOneAndUpdate({id: sender}, {$set: {friends: senderUpdatedFriends}});
@@ -229,15 +236,17 @@ router.post("/:sender/relationships/:recipient/pending", async (req, res) => { /
     });
     
     try {
-        let senderUpdatedRequests = senderObj.friend_requests.push(newFriendRequest)
-        
-        let recipientUpdatedRequests = recipientObj.friend_requests.push(newFriendRequest);
+        senderObj.friend_requests.push(newFriendRequest)
+        recipientObj.friend_requests.push(newFriendRequest);
 
-        let resSender = await User.findOneAndUpdate({id: sender}, {$set: {friend_requests: senderUpdatedRequests}});
-        let resRecipient = await User.findOneAndUpdate({id: recipient}, {$set: {friend_requests: recipientUpdatedRequests}})
+        console.log(recipientObj)
+
+        let resSender = await senderObj.save()
+        let resRecipient = await recipientObj.save()
 
         if(!resSender || !resRecipient) return res.status(500).json({msg: "Internal server error."});
-        return res.json({"sent": resSender.friend_requests.to.contains(recipient)});
+        resSender.friend_requests.forEach((friendRequest) => {if(friendRequest.to === recipient) sent = true})
+        return res.json({"sent": sent});
     }
     catch (err) {
         res.status(500).json({msg: "Internal server error."});

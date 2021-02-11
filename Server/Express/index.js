@@ -34,7 +34,7 @@ import guildRouter from "./routes/guildRouter.js";
 
 
 //routes
-app.use("/users", userRouter); //user routes
-app.use("/bots", botRouter); //bot routes (wip)
-app.use("/channels", channelRouter); //channel routes (wip)
-app.use("/guilds", guildRouter); //guild routes (wip)
+app.use("/api/v1/users", userRouter); //user routes
+app.use("/api/v1/bots", botRouter); //bot routes (wip)
+app.use("/api/v1/channels", channelRouter); //channel routes (wip)
+app.use("/api/v1/guilds", guildRouter); //guild routes (wip)
