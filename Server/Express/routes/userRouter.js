@@ -203,7 +203,7 @@ router.post("/:sender/relationships/:recipient/pending", async (req, res) => { /
 
     if(!senderObj || !recipientObj) return res.status(400).json({msg: "Bad sender or recipient ID"});
 
-    if(recipientObj.friends.includes(sender) && senderObj.friends.contains(recipient)) return res.json({msg: 'Already friends.'})
+    if(recipientObj.friends.includes(sender) && senderObj.friends.includes(recipient)) return res.json({msg: 'Already friends.'})
 
 
     let cannotSend = 'You cannot send a friend requset to this user because'; 
@@ -211,11 +211,11 @@ router.post("/:sender/relationships/:recipient/pending", async (req, res) => { /
     if(recipientObj.blocked_users.includes(sender)) return res.json({msg: `${cannotSend} they have blocked you.`});
     if(senderObj.blocked_users.includes(recipient)) return res.json({msg: `${cannotSend} you have blocked them.`});
 
-    if(recipientObj.friends_requests?.to.includes(sender)) {
+    if(recipientObj.friend_requests?.to?.includes(sender)) {
         let recipientUpdatedFriends = recipientObj.friends.push(sender);
         let senderUpdatedFriends = senderObj.friends.push(recipient);
         
-        const frIdx = recipientObj.friends_requests.indexOf({_id, date, from: sender, to: recipient})
+        const frIdx = recipientObj.friend_requests.indexOf({_id, date, from: sender, to: recipient})
         console.log(frIdx);
 
         try {
@@ -260,28 +260,33 @@ router.delete("/:sender/relationships/:recipient/pending", async (req, res) => {
     const recipient = req.params.recipient;
     
     let requestFound = [];
+    let senderUpdatedFriends;
+    let recipientUpdatedFriends;
 
     let senderObj = await User.findOne({id: sender});
     let recipientObj = await User.findOne({id: recipient});
 
-    let senderFriendRequests = senderObj.friend_requests?.forEach((freq, idx, object) => {
+    console.log(senderObj);
+    console.log(recipientObj);
+
+    senderObj.friend_requests.forEach((freq, idx, object) => {
+        console.log(freq)
         if(freq.to == recipient){
-            object.splice(idx, 1);
+            senderUpdatedFriends = object.splice(idx, 1);
             return requestFound.push(true);
         }
     });
 
-    let recipientFriendRequests = recipientObj.friends_requests?.forEach((freq, idx, object) => {
-        if(freq.to == recipient) {
-            object.splice(idx, 1);
+
+    recipientObj.friend_requests.forEach((freq, idx, object) => {
+        console.log(freq)
+        if(freq.to === recipient) {
+            recipientUpdatedFriends = object.splice(idx, 1);
             return requestFound.push(true);
         }
     });
-    
-    if(!recipientObj.friends_requests || !requestFound) return res.status(404).json({msg: "Friend request not found"});
 
-    recipientObj.set({friend_requests: recipientFriendRequests});
-    senderObj.set({friend_requests: senderFriendRequests});
+    if(!requestFound.includes(true)) return res.status(404).json({msg: "Friend request not found"});
 
     let resSender = await senderObj.save().catch(err => {
         console.log('[',new Date().toUTCString(),']', err)
@@ -293,8 +298,7 @@ router.delete("/:sender/relationships/:recipient/pending", async (req, res) => {
         return res.status(500).json({msg: "Internal server error.", reason: err})
     });
 
-    if(!resSender || ! resRecipient) return res.status(500).json({msg: "Internal server error."});
-    res.status(200);
+    res.status(200).json({msg: "Canceled friend request."})
 });
 
 //remove friend
@@ -320,17 +324,17 @@ router.delete("/:sender/relationships/:recipient/pending", async (req, res) => {
 //         $set: {friends: senderFriends}
 //     }).catch(err => {
 //         console.log('[',new Date().toUTCString(),']', err)
-//         return res.status(400).json({msg: "Internal server error.", reason: err})
+//         return res.status(500).json({msg: "Internal server error.", reason: err})
 //     });
 
 //     let resRecipient = await User.findOneAndUpdate({id: recipient}, {
 //         $set: {friends: recipientFriends}
 //     }).catch(err => {
 //         console.log('[',new Date().toUTCString(),']', err)
-//         return res.status(400).json({msg: "Internal server error.", reason: err})
+//         return res.status(500).json({msg: "Internal server error.", reason: err})
 //     });
 
-//     if(!resSender || !resRecipient) return res.status(400).json({msg: "Internal server error"});
+//     if(!resSender || !resRecipient) return res.status(500).json({msg: "Internal server error"});
     
 //     return res.status(200);
 // });
@@ -361,17 +365,17 @@ router.post("/:sender/relationships/:recipient/block", async (req, res) => {
         $set: {friends: senderFriends}
     }).catch(err => {
         console.log('[',new Date().toUTCString(),']', err)
-        return res.status(400).json({msg: "Internal server error.", reason: err})
+        return res.status(500).json({msg: "Internal server error.", reason: err})
     });
 
     let resRecipient = await User.findOneAndUpdate({id: recipient}, {
         $set: {friends: recipientFriends}
     }).catch(err => {
         console.log('[',new Date().toUTCString(),']', err)
-        return res.status(400).json({msg: "Internal server error.", reason: err})
+        return res.status(500).json({msg: "Internal server error.", reason: err})
     });
 
-    if(!resSender || !resRecipient) return res.status(400).json({msg: "Internal server error."})
+    if(!resSender || !resRecipient) return res.status(500).json({msg: "Internal server error."})
     return res.status(200).json(resSender);
 
 });
@@ -395,7 +399,7 @@ router.delete("/:sender/relationships/:recipient", async (req, res) => {
         }
     });;
 
-    if(senderUpdatedFriends.includes({id: recipient})) return res.status(400).json({msg: "Internal server error", reason: "Recipient still in friends list"});
+    if(senderUpdatedFriends.includes({id: recipient})) return res.status(500).json({msg: "Internal server error", reason: "Recipient still in friends list"});
 
     let resSen = User.findOneAndUpdate({id: sender}, {
         $set: {friends: senderFriends}
@@ -405,22 +409,25 @@ router.delete("/:sender/relationships/:recipient", async (req, res) => {
         $set: {friends: recipientFriends}
     });
 
-    if(!resSen || !resRec) {console.log(resSen + resSec); return res.status(400).json({msg: "Internal server error.", reason: "resSen or resRec missing"})};
+    if(!resSen || !resRec) {console.log(resSen + resSec); return res.status(500).json({msg: "Internal server error.", reason: "resSen or resRec missing"})};
     return res.status(200);
 });
 
 //get basic user data
 router.get("/", auth, async (req, res) => {
-    const user = await User.find({id: req.id});
+    let id = req.header("id");
+
+    const user = await User.find({id});
     try{
-    res.json({
-        icon: user.icon,
-        displayName: user.displayName,
-        discriminator: user.discriminator,
-        id: user.id
-    });
+        res.json({
+            icon: user.icon,
+            displayName: user.displayName,
+            discriminator: user.discriminator,
+            id: user.id
+        });
+    } catch(err) {
+        res.status(500).json({msg:"Internal server error"})
     }
-    catch(err){res.status(500).json({msg:"Internal server error"})}
 });
 
 //delete user
@@ -445,8 +452,7 @@ router.delete("/", auth, async (req, res) => {
             res.json(resUser);
         }
         
-    }
-    catch (err) {
+    } catch(err) {
         res.status(500).json({error: "Internal server error"})
         console.error(`[${new Date().toLocaleTimeString()}]`, err)
     }
