@@ -7,6 +7,19 @@ const userSchema = new mongoose.Schema({
     password: {type: String, required: true, minlength: 6},
     displayName: {type: String, required: true, minlength: 4},
     icon: {type: String},
+    owner_of: {type: {
+        guilds: {type: [Object]},
+        rifts: {type: [Object]},
+        groups: {type: [Object]},
+        bots: {type: [Object]},
+        teams: {type: [Object]}
+    }},
+    member_of: {type: {
+        guilds: {type: [Object]},
+        dms: {type: [Object]}, //group is classified as DM
+        rifts: {type: [Object]},
+        teams: {type: [Object]}
+    }},
     badges: {type: [Object]},
     achievements: {type: Array},
     discriminator: {type: String, required: true, length: 5},

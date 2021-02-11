@@ -8,7 +8,11 @@
     - [ ] If one person cancels or declines the request, send the opposite user a notification
     - [X] Add authentication
 - [ ] Get guilds working
+    - [X] Create guilds
 - [ ] Get channels working
 - [ ] Add status checking for friend manipulation
 - [ ] Consolodate schemas to their respective directories
 - [ ] Contemplate `auth` param vs. `tokenToID` function
+- [ ] Add patch methods for user data
+- [ ] Commet invites
+- [ ] Incorporate roleRouter and channelRouter into guildRouter

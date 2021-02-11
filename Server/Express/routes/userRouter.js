@@ -10,7 +10,7 @@ import FriendRequest from "../../../Database/models/friendRequestModel.js";
 
 let userIncrement = 0;
 
-const tokenToID = async (req, res) => { //make this it's own reusable function
+export const tokenToID = async (req, res) => { //make this it's own reusable function
     const token = req.header("x-auth-token");
     if(!token) return res.json({token_provided: false});
 
@@ -23,9 +23,10 @@ const tokenToID = async (req, res) => { //make this it's own reusable function
     return user.id;
 }
 
-const authenticate = async (req, res) => {
+export const authenticate = async (req, res) => {
     const id = await tokenToID(req, res);
-    if(id !== req.params.sender) return res.status(401).json({msg: "You may only send friend requests from your own account."});
+    let { owner_id } = req.body;
+    if(id !== req.params?.sender &&  id !== owner_id) return res.status(401).json({msg: "You may only send friend requests from your own account."});
 }
 
 //register user
@@ -210,7 +211,7 @@ router.post("/:sender/relationships/:recipient/pending", async (req, res) => { /
     const sender = req.params.sender;
     const recipient = req.params.recipient;
 
-    authenticate();
+    authenticate(req, res);
 
     let senderObj = await User.findOne({id: sender});
     let recipientObj = await User.findOne({id: recipient});
@@ -285,7 +286,7 @@ router.post("/:sender/relationships/:recipient/pending", async (req, res) => { /
 
 //cancel friend request
 router.delete("/:sender/relationships/:recipient/pending", async (req, res) => {
-    authenticate();
+    authenticate(req, res);
     
     const sender = req.params.sender;
     const recipient = req.params.recipient;
@@ -327,7 +328,7 @@ router.delete("/:sender/relationships/:recipient/pending", async (req, res) => {
 
 //block
 router.post("/:sender/relationships/:recipient/block", async (req, res) => {
-    authenticate();
+    authenticate(req, res);
     
     const sender = req.params.sender;
     const recipient = req.params.recipient;
@@ -365,7 +366,7 @@ router.post("/:sender/relationships/:recipient/block", async (req, res) => {
 
 //remove friend
 router.delete("/:sender/relationships/:recipient", async (req, res) => {
-    authenticate();
+    authenticate(req, res);
     
     const sender = req.params.sender;
     const recipient = req.params.recipient;
