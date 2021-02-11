@@ -21,7 +21,8 @@ const uri = env.MONGODB_CONNECTION_STRING || 'mongodb://localhost:27017';
 mongoose.connect(uri, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
-    useCreateIndex: true
+    useCreateIndex: true,
+    useFindAndModify: false
 }, (err) => {
     if(err) throw err;
     console.log("MongoDB Connected");

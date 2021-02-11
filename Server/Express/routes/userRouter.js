@@ -258,36 +258,42 @@ router.post("/:sender/relationships/:recipient/pending", async (req, res) => { /
 router.delete("/:sender/relationships/:recipient/pending", async (req, res) => {
     const sender = req.params.sender;
     const recipient = req.params.recipient;
+    
+    let requestFound = [];
 
     let senderObj = await User.findOne({id: sender});
-    let senderFriendRequests = senderObj.friend_requests.forEach((friend, idx, object) => {
-        if(friend.id == recipient){
-            object.splice(idx, 1);
-        }
-    });
-
     let recipientObj = await User.findOne({id: recipient});
-    let recipientFriendRequests = recipientObj.friend_requests.forEach((friend, idx, object) => {
-        if(friend.id == sender){
+
+    let senderFriendRequests = senderObj.friend_requests?.forEach((freq, idx, object) => {
+        if(freq.to == recipient){
             object.splice(idx, 1);
+            return requestFound.push(true);
         }
     });
 
-    let resSender = await User.findByIdAndUpdate({id: sender}, {
-        $set: {friends_requests: senderFriendRequests}
-    }).catch(err => {
+    let recipientFriendRequests = recipientObj.friends_requests?.forEach((freq, idx, object) => {
+        if(freq.to == recipient) {
+            object.splice(idx, 1);
+            return requestFound.push(true);
+        }
+    });
+    
+    if(!recipientObj.friends_requests || !requestFound) return res.status(404).json({msg: "Friend request not found"});
+
+    recipientObj.set({friend_requests: recipientFriendRequests});
+    senderObj.set({friend_requests: senderFriendRequests});
+
+    let resSender = await senderObj.save().catch(err => {
         console.log('[',new Date().toUTCString(),']', err)
-        return res.status(400).json({msg: "Internal server error.", reason: err})
+        return res.status(500).json({msg: "Internal server error.", reason: err})
     });
 
-    let resRecipient = await User.findOneAndUpdate({id: recipient}, {
-        $set: {friend_requests: recipientFriendRequests}
-    }).catch(err => {
+    let resRecipient = await recipientObj.save().catch(err => {
         console.log('[',new Date().toUTCString(),']', err)
-        return res.status(400).json({msg: "Internal server error.", reason: err})
+        return res.status(500).json({msg: "Internal server error.", reason: err})
     });
 
-    if(!resSender || ! resRecipient) return res.status(400).json({msg: "Internal server error."});
+    if(!resSender || ! resRecipient) return res.status(500).json({msg: "Internal server error."});
     res.status(200);
 });
 
