@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
     badges: {type: [Object]},
     achievements: {type: Array},
     discriminator: {type: String, required: true, length: 5},
+    notifications: {type: [Object]},
     blocked_users: {type: Array},
     friend_requests: {type: [friendRequestSchema]},
     friends: {type: [String]}, //possibly store basic user data for speed?

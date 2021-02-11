@@ -7,9 +7,26 @@ import auth from "../middleware/auth.js";
 
 import User from "../../../Database/models/userModel.js";
 import FriendRequest from "../../../Database/models/friendRequestModel.js";
-import e from 'cors';
 
 let userIncrement = 0;
+
+const tokenToID = async (req, res) => { //make this it's own reusable function
+    const token = req.header("x-auth-token");
+    if(!token) return res.json({token_provided: false});
+
+    const verified = jwt.verify(token, process.env.JWT_SECRET);
+    if(!verified) return res.json({verified: false});
+
+    const user = await User.findById(verified.id);
+    if(!user) return res.json(false);
+
+    return user.id;
+}
+
+const authenticate = async (req, res) => {
+    const id = await tokenToID(req, res);
+    if(id !== req.params.sender) return res.status(401).json({msg: "You may only send friend requests from your own account."});
+}
 
 //register user
 router.post("/", async (req, res) => {
@@ -69,8 +86,8 @@ router.post("/", async (req, res) => {
         res.json(resUser);
     }
     catch (err) {
-        res.status(500).json({error: "Internal server error"});
-        console.error(`[${new Date().toLocaleTimeString()}]`, err);
+        console.error(`[${new Date().toLocaleTimeString()}]`, err)
+        return res.status(500).json({error: "Internal server error"})
     }
 })
 
@@ -78,7 +95,6 @@ router.post("/", async (req, res) => {
 router.post("/login", async (req, res) => {
     try {
         const {email, password} = req.body;
-       
 
         //validate
         const user = await User.findOne({email: email});
@@ -104,8 +120,8 @@ router.post("/login", async (req, res) => {
         }
     } 
     catch (err) {
-        res.status(500).json({error: "Internal server error"})
         console.error(`[${new Date().toLocaleTimeString()}]`, err)
+        return res.status(500).json({error: "Internal server error"})
     }
 });
 
@@ -124,8 +140,8 @@ router.get("/validate-token", async (req, res) => {
         return res.json(true);
     }
     catch (err) {
-        res.status(500).json({error: "Internal server error"})
         console.error(`[${new Date().toLocaleTimeString()}]`, err)
+        return res.status(500).json({error: "Internal server error"})
     }
 })
 
@@ -136,7 +152,6 @@ router.get("/resolve-token-full", async (req, res) => {
         if(!token) return res.json({token_provided: false});
 
         const verified = jwt.verify(token, process.env.JWT_SECRET);
-        console.log(verified);
         if(!verified) return res.json({valid_token: false});
 
         const user = await User.findById(verified.id);
@@ -158,15 +173,15 @@ router.get("/resolve-token-full", async (req, res) => {
         res.json(resUser);
     }
     catch (err) {
-        res.status(500).json({error: "Internal server error"})
         console.error(`[${new Date().toLocaleTimeString()}]`, err)
+        return res.status(500).json({error: "Internal server error"})
     }
 })
 
 //resolve id to user
-router.get("/resolve-id", async (req, res) => {
+router.get("/resolve-id/:id", async (req, res) => {
     try {
-        const id = req.header("id");
+        const id = req.header("id") || req.params.id;
         if(!id) return res.json({id_provided: false});
 
         const user = await User.find({id});
@@ -185,8 +200,8 @@ router.get("/resolve-id", async (req, res) => {
         res.json(resUser);
     }
     catch (err) {
-        res.status(500).json({error: "Internal server error"})
         console.error(`[${new Date().toLocaleTimeString()}]`, err)
+        return res.status(500).json({error: "Internal server error"})
     }
 })
 
@@ -195,7 +210,7 @@ router.post("/:sender/relationships/:recipient/pending", async (req, res) => { /
     const sender = req.params.sender;
     const recipient = req.params.recipient;
 
-    // const token = req.header("x-auth-token");
+    authenticate();
 
     let senderObj = await User.findOne({id: sender});
     let recipientObj = await User.findOne({id: recipient});
@@ -230,15 +245,14 @@ router.post("/:sender/relationships/:recipient/pending", async (req, res) => { /
                 if(freq.to === sender && freq.from === recipient) {
                     object.splice(idx, 1);
                     recipientObj.friends.push(sender);
-                    senderObj.friends.push(recipient);
-                    
-                    recipientObj.save();
-                    senderObj.save();
-
-                    return res.status(200).json({msg: "Mutual requests, friends added."});
-                
+                    senderObj.friends.push(recipient);                
                 }
             });
+            
+            recipientObj.save();
+            senderObj.save();
+
+            return res.status(200).json({msg: "Mutual requests, friends added."}); //todo: actually return
         };
     } catch(err) {
         console.error(err)
@@ -254,8 +268,6 @@ router.post("/:sender/relationships/:recipient/pending", async (req, res) => { /
     try {
         senderObj.friend_requests.push(newFriendRequest)
         recipientObj.friend_requests.push(newFriendRequest);
-
-        console.log(recipientObj)
 
         let resSender = await senderObj.save();
         let resRecipient = await recipientObj.save();
@@ -273,9 +285,11 @@ router.post("/:sender/relationships/:recipient/pending", async (req, res) => { /
 
 //cancel friend request
 router.delete("/:sender/relationships/:recipient/pending", async (req, res) => {
+    authenticate();
+    
     const sender = req.params.sender;
     const recipient = req.params.recipient;
-    
+        
     let requestFound = [];
 
     let senderObj = await User.findOne({id: sender});
@@ -298,12 +312,12 @@ router.delete("/:sender/relationships/:recipient/pending", async (req, res) => {
 
     if(!requestFound.includes(true)) return res.status(404).json({msg: "Friend request not found"});
 
-    let resSender = await senderObj.save().catch(err => {
+    senderObj.save().catch(err => {
         console.log('[',new Date().toUTCString(),']', err)
         return res.status(500).json({msg: "Internal server error.", reason: err})
     });
 
-    let resRecipient = await recipientObj.save().catch(err => {
+    recipientObj.save().catch(err => {
         console.log('[',new Date().toUTCString(),']', err)
         return res.status(500).json({msg: "Internal server error.", reason: err})
     });
@@ -313,47 +327,46 @@ router.delete("/:sender/relationships/:recipient/pending", async (req, res) => {
 
 //block
 router.post("/:sender/relationships/:recipient/block", async (req, res) => {
+    authenticate();
+    
     const sender = req.params.sender;
     const recipient = req.params.recipient;
 
-    console.log(sender, recipient);
-    
     let senderObj = await User.findOne({id: sender});
-    let senderFriends = senderObj.friends.forEach((friend, idx, object) => {
-        if(friend.id == recipient){
-            object.splice(idx, 1);
-        }
-    });
-
     let recipientObj = await User.findOne({id: recipient});
-    let recipientFriends = recipientObj.friends.forEach((friend, idx, object) => {
-        if(friend.id == sender){
+
+    senderObj.friends.forEach((friend, idx, object) => {
+        if(friend === recipient){
             object.splice(idx, 1);
         }
     });
 
-    let resSender = await User.findByIdAndUpdate({id: sender}, {
-        $push: {blocked: recipient},
-        $set: {friends: senderFriends}
-    }).catch(err => {
+    senderObj.blocked_users.push(recipient);
+
+    recipientObj.friends.forEach((friend, idx, object) => {
+        if(friend === sender){
+            object.splice(idx, 1);
+        }
+    });
+
+    senderObj.save().catch(err => {
         console.log('[',new Date().toUTCString(),']', err)
         return res.status(500).json({msg: "Internal server error.", reason: err})
     });
 
-    let resRecipient = await User.findOneAndUpdate({id: recipient}, {
-        $set: {friends: recipientFriends}
-    }).catch(err => {
+    recipientObj.save().catch(err => {
         console.log('[',new Date().toUTCString(),']', err)
         return res.status(500).json({msg: "Internal server error.", reason: err})
     });
 
-    if(!resSender || !resRecipient) return res.status(500).json({msg: "Internal server error."})
-    return res.status(200).json(resSender);
+    return res.status(200).json({msg: `Blocked ${recipientObj.displayName}#${recipientObj.discriminator} (${recipientObj.id})`});
 
 });
 
 //remove friend
 router.delete("/:sender/relationships/:recipient", async (req, res) => {
+    authenticate();
+    
     const sender = req.params.sender;
     const recipient = req.params.recipient;
 
@@ -392,7 +405,7 @@ router.delete("/:sender/relationships/:recipient", async (req, res) => {
 });
 
 //get basic user data
-router.get("/", auth, async (req, res) => {
+router.get("/", async (req, res) => {
     let id = req.header("id");
 
     const user = await User.find({id});
@@ -404,7 +417,8 @@ router.get("/", auth, async (req, res) => {
             id: user.id
         });
     } catch(err) {
-        res.status(500).json({msg:"Internal server error"})
+        console.error(`[${new Date().toLocaleTimeString()}]`, err)
+        return res.status(500).json({error: "Internal server error"})
     }
 });
 
@@ -412,12 +426,16 @@ router.get("/", auth, async (req, res) => {
 router.delete("/", auth, async (req, res) => {
     try{
         const {id, password} = req.body;
+        //submit token in header with "x-auth-token"
+
+        if(!token) return res.status(400).json({msg: "No token was supplied"});
         if(!password) return res.status(400).json({msg: "No password was supplied"});
 
         const passMatch = await bcrypt.compare(password, user.password);
         if(!passMatch) return res.status(400).json({msg: "Invalid credentials."});
         
-        const token = jwt.sign({id: user._id}, process.env.JWT_SECRET);
+        let idFromToken = await tokenToID(req, res);
+        if(idFromToken !== id) return res.status(401).json({msg: "Unauthorized"});
 
         if(passMatch === true) {
             const deletedUser = await User.findOneAndDelete({id: req.id});
@@ -431,8 +449,8 @@ router.delete("/", auth, async (req, res) => {
         }
         
     } catch(err) {
-        res.status(500).json({error: "Internal server error"})
         console.error(`[${new Date().toLocaleTimeString()}]`, err)
+        return res.status(500).json({error: "Internal server error"})
     }
 });
 

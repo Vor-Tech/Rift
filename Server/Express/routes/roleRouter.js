@@ -55,15 +55,20 @@ router.post("/create", async (req,res) => {
 
 router.delete("/delete", auth, async (req, res) => {
     try{
-        console.log(req.user)
-        const deletedUser = await User.findByIdAndDelete(req.user);
-        res.json(deletedUser);
+        const guild = await Guild.findOne({id: req.role.guild_id});
+        guild.roles.forEach((roleObj, idx, object) => {
+            if(roleObj.id === req.role.id) {
+                object.splice(idx, 1);
+            }
+        })
+
+        guild.save();
     }
     catch (err) {
         res.status(500).json({error: "Internal server error"})
         console.error(`[${new Date().toLocaleTimeString()}]`, err)
     }
-}) //later path: /close
+})
 
 router.post("/tokenValid", async (req, res) => {
     try {
@@ -82,33 +87,6 @@ router.post("/tokenValid", async (req, res) => {
         res.status(500).json({error: "Internal server error"})
         console.error(`[${new Date().toLocaleTimeString()}]`, err)
     }
-})
-
-router.post("/resToken", async (req, res) => {
-    try {
-        const token = req.header("x-auth-token");
-        if(!token) return res.json({token_provided: false});
-
-        const verified = jwt.verify(token, process.env.JWT_SECRET);
-        if(!verified) return res.json({valid_token: false});
-
-        const user = await User.findById(verified.id);
-        if(!user) return res.json({valid_user: false});
-
-        return res.json(user);
-    }
-    catch (err) {
-        res.status(500).json({error: "Internal server error"})
-        console.error(`[${new Date().toLocaleTimeString()}]`, err)
-    }
-})
-
-router.get("/", auth, async (req, res) => {
-    const user = await User.findById(req.user);
-    res.json({
-        displayName: user.displayName,
-        id: user._id,
-    });
 })
 
 export default router;

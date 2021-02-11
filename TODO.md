@@ -4,8 +4,11 @@
 - [ ] Implement WebRTC
 - [ ] Convert WebSocket server to Plug Cowboy
 - [ ] Get friends list working [In Progress]
-    - Once friends are added, remove the friend requests
-    - If one person cancels or declines the request, send the opposite user a notification
+    - [X] Once friends are added, remove the friend requests
+    - [ ] If one person cancels or declines the request, send the opposite user a notification
+    - [X] Add authentication
 - [ ] Get guilds working
 - [ ] Get channels working
 - [ ] Add status checking for friend manipulation
+- [ ] Consolodate schemas to their respective directories
+- [ ] Contemplate `auth` param vs. `tokenToID` function
