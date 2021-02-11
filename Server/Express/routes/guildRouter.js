@@ -126,7 +126,8 @@ router.post("/create", async (req,res) => {
         //save guild to db
         const savedGuild = await newGuild.save();
 
-        owner.owner_of.guilds.push(savedGuild.id)
+        owner.owner_of.guilds.push(savedGuild.id);
+        owner.member_of.guilds.push(savedGuild.id);
         owner.save();
         //confirm and return
         let resGuild = await Guild.findOne(savedGuild.id);

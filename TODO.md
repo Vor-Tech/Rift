@@ -12,7 +12,8 @@
 - [ ] Get channels working
 - [ ] Add status checking for friend manipulation
 - [ ] Consolodate schemas to their respective directories
-- [ ] Contemplate `auth` param vs. `tokenToID` function
+- [ ] Contemplate `auth` param vs. `authenticate` function
 - [ ] Add patch methods for user data
 - [ ] Commet invites
 - [ ] Incorporate roleRouter and channelRouter into guildRouter
+- [ ] Incorporate ws ability to edit/delete messages

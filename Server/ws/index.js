@@ -42,7 +42,6 @@ io.on('connection', (socket) => {
 
   // Listen to connected users for a new message.
   socket.on('message', (msg) => {
-    console.log(msg)
     // Create a message with the content and the name of the user.
     const message = new Message({
       author: msg.author,
@@ -50,8 +49,6 @@ io.on('connection', (socket) => {
       content: msg.content,
     });
     
-    console.log(message)
-
     // Save the message to the database.
     message.save((err) => {
       if (err) return console.log(err);
@@ -63,5 +60,5 @@ io.on('connection', (socket) => {
 });
 
 server.listen(port, () => {
-  console.log('listening on *:' + port);
+  console.log('listening on port ' + port);
 });
