@@ -1,0 +1,15 @@
+- [ ] Integrate discors
+    - [ ] Convert discors jsx classes to functions
+    - [X] Replace Ajax with Axios
+- [X] Fix author being displayed twice
+- [X] Disable message board on logout (Depr)
+- [ ] Context menu
+- [ ] Implement Redux
+- [ ] Implement delete message
+- [ ] Implement edit message
+- [ ] Implement WebRTC
+- [ ] Use cookies
+- [X] Fix author not being in state at login
+- [ ] Make author a clickable element that uses ProfileCard to show account info
+- [ ] Make user information in bottom left clickable to set status, similar to discord
+- [ ] Add image display support

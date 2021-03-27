@@ -1,0 +1,128 @@
+@supports (-ms-ime-align: auto) {
+  .side-bar {
+    overflow-x: hidden;
+  }
+  
+  .side-scroll-container {
+    width: 86px;
+  }
+
+  .channel-scroll-wrapper {
+    width: 256px;
+  }
+
+  .channels {
+    overflow: hidden
+  }
+
+  .server-members-scroll {
+    width: 256px;
+  }
+
+  .message-scroll-wrapper {
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+    padding-right: 16px;
+    box-sizing: content-box;
+  }
+
+  .chat-main {
+    overflow: hidden;
+    height: calc(100vh - 38px);
+  }
+
+  .message-wrapper {
+    display: block !important;
+    overflow: hidden;
+  }
+
+  .right-main {
+    width: 240px;
+  }
+
+  .friends-scroll-wrapper {
+    width: calc(100vw - 294px);
+  }
+
+  .ReactModal__Content {
+    overflow: hidden !important;
+  }
+
+  .create-server-form-bottom button {
+    align-items: center;
+  }
+
+  .message-list {
+    overflow-x: visible !important;
+  }
+}
+
+@supports (-ms-accelerator:true) {
+  .side-bar {
+    overflow-x: hidden;
+  }
+  
+  .side-scroll-container {
+    width: 86px;
+  }
+
+  .channel-scroll-wrapper {
+    width: 256px;
+  }
+
+  .channels {
+    overflow: hidden
+  }
+
+  .server-members-scroll {
+    width: 256px;
+  }
+
+  .message-scroll-wrapper {
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+    padding-right: 16px;
+    box-sizing: content-box;
+  }
+
+  .chat-main {
+    overflow: hidden;
+    height: calc(100vh - 38px);
+  }
+
+  .message-wrapper {
+    display: block !important;
+    overflow: hidden;
+  }
+
+  .right-main {
+    width: 240px;
+  }
+
+  .friends-scroll-wrapper {
+    width: calc(100vw - 294px);
+  }
+
+  .ReactModal__Content {
+    overflow: hidden !important;
+    background-color: black;
+    opacity: 0.85;
+  }
+
+  .create-server-form-bottom button {
+    align-items: center;
+  }
+
+  .search-results ul {
+    width: 435px;
+    padding-right: 20px;
+    box-sizing: border-box;
+  }
+
+  .message-list {
+    overflow-x: visible !important;
+  }
+}
+
