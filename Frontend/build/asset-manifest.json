@@ -1,17 +1,22 @@
 {
   "files": {
-    "main.js": "/static/js/main.6eb1bbde.chunk.js",
-    "main.js.map": "/static/js/main.6eb1bbde.chunk.js.map",
+    "main.css": "/static/css/main.8b852963.chunk.css",
+    "main.js": "/static/js/main.cea38125.chunk.js",
+    "main.js.map": "/static/js/main.cea38125.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.a31dd724.js",
     "runtime-main.js.map": "/static/js/runtime-main.a31dd724.js.map",
-    "static/js/2.6a47a695.chunk.js": "/static/js/2.6a47a695.chunk.js",
-    "static/js/2.6a47a695.chunk.js.map": "/static/js/2.6a47a695.chunk.js.map",
+    "static/js/2.7b418ce4.chunk.js": "/static/js/2.7b418ce4.chunk.js",
+    "static/js/2.7b418ce4.chunk.js.map": "/static/js/2.7b418ce4.chunk.js.map",
     "index.html": "/index.html",
-    "static/js/2.6a47a695.chunk.js.LICENSE.txt": "/static/js/2.6a47a695.chunk.js.LICENSE.txt"
+    "static/css/main.8b852963.chunk.css.map": "/static/css/main.8b852963.chunk.css.map",
+    "static/js/2.7b418ce4.chunk.js.LICENSE.txt": "/static/js/2.7b418ce4.chunk.js.LICENSE.txt",
+    "static/media/splash.scss": "/static/media/p-font.76c4799d.woff",
+    "static/media/login.scss": "/static/media/login4.caae8d9a.woff"
   },
   "entrypoints": [
     "static/js/runtime-main.a31dd724.js",
-    "static/js/2.6a47a695.chunk.js",
-    "static/js/main.6eb1bbde.chunk.js"
+    "static/js/2.7b418ce4.chunk.js",
+    "static/css/main.8b852963.chunk.css",
+    "static/js/main.cea38125.chunk.js"
   ]
 }

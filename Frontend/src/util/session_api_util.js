@@ -1,17 +1,15 @@
 import Axios from 'axios';
 
 export const login = user => (
-  Axios({
-    method: 'POST',
-    url: 'localhost:3000/api/session',
+  Axios.post({
+    url: 'localhost:1337/api/session',
     data: { user }
   })
 );
 
 export const fetchCurrentUserData = () => (
-  Axios({
-    method: 'GET',
-    url: 'localhost:3000/api/users/data',
+  Axios.get({
+    url: 'localhost:1337/api/users/data',
   })
 );
 
