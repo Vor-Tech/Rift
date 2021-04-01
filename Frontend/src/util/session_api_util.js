@@ -3,7 +3,7 @@ import Axios from 'axios';
 export const login = user => (
   Axios({
     method: 'POST',
-    url: '/api/v1/session',
+    url: 'localhost:3000/api/session',
     data: { user }
   })
 );
@@ -11,14 +11,14 @@ export const login = user => (
 export const fetchCurrentUserData = () => (
   Axios({
     method: 'GET',
-    url: '/api/v1/users/data',
+    url: 'localhost:3000/api/users/data',
   })
 );
 
 export const signup = user => (
   Axios({
     method: 'POST',
-    url: '/api/v1/users',
+    url: 'localhost:3000/api/users',
     data: { user }
   })
 );
@@ -26,13 +26,13 @@ export const signup = user => (
 export const logout = () => (
   Axios({
     method: 'DELETE',
-    url: '/api/v1/session'
+    url: 'localhost:3000/api/session'
   })
 );
 
 export const editUser = (formData) => (
   Axios({
-    url: `/api/v1/users/${formData.get('user[id]')}`,
+    url: `localhost:3000/api/users/${formData.get('user[id]')}`,
     method: 'PATCH',
     data: formData,
     contentType: false,

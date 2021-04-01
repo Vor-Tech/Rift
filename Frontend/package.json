@@ -1,7 +1,10 @@
 {
   "dependencies": {
+    "@reduxjs/toolkit": "^1.5.1",
     "axios": "^0.21.1",
     "husky": "^5.2.0",
+    "immer": "^8.0.1",
+    "lodash": "^4.17.21",
     "moment-timezone": "^0.5.33",
     "react": "^17.0.1",
     "react-dnd": "^14.0.1",
@@ -19,7 +22,7 @@
     "webpack-cli": "^4.5.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "PORT=3006 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

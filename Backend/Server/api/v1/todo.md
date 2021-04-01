@@ -1,0 +1,4 @@
+- [ ] Complete psuedo api conversion
+- [ ] Fix rendering to weird endpoint
+- [ ] Make sure requred params are supplied
+- [ ] Consolidate friend actions into relationships 

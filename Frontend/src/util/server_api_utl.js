@@ -3,7 +3,7 @@ import Axios from 'axios';
 export const createServer = formData => (
   Axios({
     method: 'POST',
-    url: '/api/v1/servers',
+    url: 'localhost:1337/api/servers',
     data: formData,
     contentType: false,
     processData: false
@@ -13,28 +13,28 @@ export const createServer = formData => (
 export const fetchServer = id => (
   Axios({
     method: 'GET',
-    url: `/api/v1/servers/${id}`,
+    url: `localhost:1337/api/servers/${id}`,
   })
 );
 
 export const fetchMembers = id => (
   Axios({
     method: 'GET',
-    url: `/api/v1/servers/${id}/members`,
+    url: `localhost:1337/api/servers/${id}/members`,
   })
 );
 
 export const fetchServers = () => (
   Axios({
     method: 'GET',
-    url: '/api/v1/servers',
+    url: 'localhost:1337/api/servers',
   })
 );
 
 export const joinServer = server => (
   Axios({
     method: 'POST',
-    url: `/api/v1/servers/join`,
+    url: `localhost:1337/api/servers/join`,
     data: { server }
   })
 );
@@ -42,6 +42,6 @@ export const joinServer = server => (
 export const deleteServer = id => (
   Axios({
     method: 'DELETE',
-    url: `/api/v1/servers/${id}`,
+    url: `localhost:1337/api/servers/${id}`,
   })
 );

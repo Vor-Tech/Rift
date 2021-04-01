@@ -45,7 +45,7 @@ export const signup = user => dispatch => (
   ))
 );
 
-export const editUser = formData => dispatch => (
+export const editUser = formData => dispatch => ( 
   APIUtil.editUser(formData).then(user => (
     dispatch(receiveCurrentUser(user))
   ), err => (
