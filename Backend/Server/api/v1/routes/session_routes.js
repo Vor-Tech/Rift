@@ -1,7 +1,7 @@
 import express from 'express';
 const router = express.Router();
 
-router.post("/session", (req, res) => {
+router.post("/", (req, res) => {
     let action = "gen session"
     console.log(`${action}:`, req);
     return res.status(422).json({msg: action});
@@ -20,7 +20,7 @@ router.post("/session", (req, res) => {
         //send 401 status, invalid username/password
 });
 
-router.delete("/session", (req, res) => {
+router.delete("/", (req, res) => {
     let action = "destroy session";
     console.log(`${action}:`, req);
     return res.status(422).json({msg: action});
