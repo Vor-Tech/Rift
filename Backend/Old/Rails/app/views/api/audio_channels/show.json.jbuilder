@@ -1,1 +1,0 @@
-json.partial! "api/audio_channels/audio_channel", audio_channel: @audio_channel
