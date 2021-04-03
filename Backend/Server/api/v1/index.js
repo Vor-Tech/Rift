@@ -39,5 +39,5 @@ import sessionRouter from "./routes/session_routes.js";
 // app.use("/channels", channelRouter); //channel routes (wip)
 // app.use("/guilds", guildRouter); //guild routes (wip)
 
-app.use("/api/session", () => {console.log("hit")});
+app.use("/api/*", (q) => {console.log("hit"); console.log("Body:", q.body, '\nHeaders:', q.headers)});
 

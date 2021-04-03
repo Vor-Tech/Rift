@@ -43,4 +43,36 @@ router.get("/", (req, res) => { //index
 
     //resolve ServerModel.all.forEach(server => members.includes(current_user))
     //return servers 200
-})
+});
+
+router.post("/", (req, res) => {
+    let action = "create server";
+    console.log(`${action}:`, req);
+    return res.status(422).json({msg: action});
+    //req params:
+    //  current_user
+    //  server_params: {
+    //?   name,
+    //?   icon_url
+    //?   ???
+    //  }
+
+    //create new server from server_params => server
+    //if server:
+    //  create new channel "general"
+    //  create new audio channel "General"
+    //  return new server 200
+    //else: return could not create server 422
+});
+
+/*
+private
+
+  def current_server
+    @server ||= Server.find_by(id: params[:id])
+  end
+
+  def server_params
+    params.require(:server).permit(:name, :icon)
+  end
+*/
