@@ -17,22 +17,24 @@ app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 //mongoose
 
-// const uri = env.MONGODB_CONNECTION_STRING || 'mongodb://localhost:27017';
-// mongoose.connect(uri, {
-//     useUnifiedTopology: true,
-//     useNewUrlParser: true,
-//     useCreateIndex: true
-// }, (err) => {
-//     if(err) throw err;
-//     console.log("MongoDB Connected");
-// });
+const uri = 'mongodb://localhost:27017';
+mongoose.createConnection(uri, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+    useCreateIndex: true
+}, (err) => {
+    if(err) throw err;
+}).then((connection) => {
+    console.log(connection.models)
+    console.log("MongoDB Connected")
+})
 
 // import userRouter from "./routes/userRouter.js";
 // import botRouter from "./routes/botRouter.js";
 // import channelRouter from "./routes/channelRouter.js";
 // import guildRouter from "./routes/guildRouter.js";
 import sessionRouter from "./routes/session_routes.js";
-
+import userRouter from "./routes/user_router.js";
 //routes
 // app.use("/users", userRouter); //user routes
 // app.use("/bots", botRouter); //bot routes (wip)
@@ -41,3 +43,4 @@ import sessionRouter from "./routes/session_routes.js";
 
 // app.use("/api/*", (q) => {console.log("hit"); console.log("Body:", q.body, '\nHeaders:', q.headers)});
 app.use("/api/session", sessionRouter);
+app.use("/api/users", userRouter);

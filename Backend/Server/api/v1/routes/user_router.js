@@ -1,15 +1,84 @@
 import express from 'express';
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import User from "../../../Database/models/userModel.js"
 const router = express.Router();
 
-router.post("/", (req, res) => { //create user
-    //req params:
-    //  user_agent
-    //  unknown:
-    //      user_params
+let userIncrement = 0
 
-    //create new user
-    //once user saved, login with new user
-    //return user information and token
+// router.post("/", (req, res) => { //create user
+//     //req params:
+//     //  user_agent
+//     //  unknown:
+//     //      user_params
+
+//     //create new user
+//     //once user saved, login with new user
+//     //return user information and token
+// })
+
+router.post("/", async (req, res) => {
+    try {
+        console.log("HIT")
+        console.log(req.body.data.user)
+        let { email, password, username } = req.body.data.user;
+
+        //validate
+
+        if(!email || email?.split('@').length == 1) return res.status(400).json({msg: "Invalid Email"});
+        // const existingUser = await User.findOne({email: email});
+        // if(existingUser) return res.status(400).json({msg: "An account with this email already exists."})
+        if(!password) return res.status(400).json({msg: "No password was supplied"});
+        // if(!passwordCheck || password !== passwordCheck) return res.status(400).json({msg: "Password check was not valid"});
+        if(!username) username = email.split('@')[0];
+        // if(!icon) icon = (acronym) => displayName.split(' ').forEach(word_idx => acronym.push(word_idx[0]));
+        if(password.length < 6) return res.status(400).json({msg: "Password must be at least 6 characters long"});
+
+        //crypt
+        const salt = await bcrypt.genSalt();
+        const passwordHash = await bcrypt.hash(password, salt)
+        
+        //increment user counter
+        userIncrement++;
+
+    //  ##############
+    //  ## user gen ##
+    //  ##############
+
+        //generate id
+        let id = (Date.now() + process.pid + userIncrement);
+
+        //generate discriminator
+        let discriminator = (Math.floor(Math.random() * 10000) + 10000).toString().substring(1);
+
+        //create new user object
+        const newUser = new User({
+            id,
+            email,
+            password: passwordHash,
+            username,
+            discriminator,
+            created_at: new Date().toUTCString()
+        });
+
+        //save new user to database
+        const savedUser = await newUser.save();
+        
+        //filter out sensitive information from response object
+        let resUser = {
+            id: savedUser.id,
+            email: savedUser.email,
+            displayName: savedUser.displayName,
+            discriminator: savedUser.discriminator,
+        };
+
+        //send response
+        res.json(resUser);
+    }
+    catch (err) {
+        console.error(`[${new Date().toLocaleTimeString()}]`, err)
+        return res.status(500).json({error: "Internal server error"})
+    }
 })
 
 //dual define for PUT req
@@ -85,3 +154,5 @@ private
     params.require(:user).permit(:username, :password, :email, :avatar)
   end
 */
+
+export default router;

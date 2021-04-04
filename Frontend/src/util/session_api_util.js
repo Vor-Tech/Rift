@@ -9,7 +9,7 @@ export const fetchCurrentUserData = () => (
 );
 
 export const signup = user => (
-  Axios.post('localhost:1337/api/users', {data: { user }})
+  Axios.post('http://localhost:1337/api/users', {data: { user }})
 );
 
 export const logout = () => (

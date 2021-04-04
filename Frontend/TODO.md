@@ -1,13 +1,16 @@
 - [ ] Integrate discors
-    - [ ] Convert discors jsx classes to functions
     - [X] Replace Ajax with Axios
-- [X] Fix author being displayed twice
+    - [X] Fix the API not being able to connect
+    - [ ] Convert all Class components into functional components
+    - [ ] Consolidate current Redux into RTK
+- [X] Fix author being displayed twice (Depr)
 - [X] Disable message board on logout (Depr)
 - [ ] Context menu
-- [ ] Implement Redux
+- [X] Implement Redux
+    - [ ] Implement RTK
 - [ ] Implement delete message
 - [ ] Implement edit message
-- [ ] Implement WebRTC
+- [ ] Implement WebRTC (In Progress)
 - [ ] Use cookies
 - [X] Fix author not being in state at login
 - [ ] Make author a clickable element that uses ProfileCard to show account info

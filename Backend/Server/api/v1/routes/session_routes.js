@@ -1,28 +1,63 @@
 import express from 'express';
 const router = express.Router();
 
-router.post("/", (req, res) => {
-    let action = "gen session"
-    console.log(`${action}:`, req);
-    return res.status(422).json({msg: action});
-    //req params: 
-    //  username,
-    //  password,
-    //  user_agent
+// router.post("/", (req, res) => {
+//     let action = "gen session";
+//     console.log(`${action}:`, "\nHeaders:", req.headers, "\nBody:", req.body);
+//     return res.status(200).json();
+//     //req params: 
+//     //  username,
+//     //  password,
+//     //  user_agent
 
-    //find user
+//     //find user
 
-    //if user: try logging in
-        //reset session token
+//     //if user: try logging in
+//         //reset session token
 
-        //if login: return result user data and token
-    //else
-        //send 401 status, invalid username/password
+//         //if login: return result user data and token
+//     //else
+//         //send 401 status, invalid username/password
+// });
+
+
+
+//login
+router.post("/", async (req, res) => {
+    try {
+        const {email, password} = req.body;
+        
+        //validate
+        if(!email) return res.status(400).json({msg: "No email was supplied"});
+        const user = await User.findOne({email: email});
+        if(!user) return res.status(400).json({msg: "Invalid credentials."});
+        if(!password) return res.status(400).json({msg: "No password was supplied"});
+
+        const passMatch = await bcrypt.compare(password, user.password);
+        if(!passMatch) return res.status(400).json({msg: "Invalid credentials."});
+        
+        const token = jwt.sign({id: user._id}, process.env.JWT_SECRET);
+
+        if(passMatch === true) {
+            res.json({
+                token,
+                user: {
+                    id: user.id,
+                    displayName: user.displayName,
+                    discriminator: user.discriminator,
+                    email: user.email,
+                },
+            });
+        }
+    } 
+    catch (err) {
+        console.error(`[${new Date().toLocaleTimeString()}]`, err)
+        return res.status(500).json({error: "Internal server error"})
+    }
 });
-
 router.delete("/", (req, res) => {
     let action = "destroy session";
-    console.log(`${action}:`, req);
+    console.log(`${action}:`, "\nHeaders:", req.headers, "\nBody:", req.body);
     return res.status(422).json({msg: action});
     //req params:
     // current_user
