@@ -19,15 +19,15 @@ let userIncrement = 0
 
 router.post("/", async (req, res) => {
     try {
-        console.log("HIT")
-        console.log(req.body.data.user)
+        // console.log("HIT")
+        // console.log(req.body.data.user)
         let { email, password, username } = req.body.data.user;
 
         //validate
 
         if(!email || email?.split('@').length == 1) return res.status(400).json({msg: "Invalid Email"});
-        // const existingUser = await User.findOne({email: email});
-        // if(existingUser) return res.status(400).json({msg: "An account with this email already exists."})
+        const existingUser = await User.findOne({email: email});
+        if(existingUser) return res.status(400).json({msg: "An account with this email already exists."})
         if(!password) return res.status(400).json({msg: "No password was supplied"});
         // if(!passwordCheck || password !== passwordCheck) return res.status(400).json({msg: "Password check was not valid"});
         if(!username) username = email.split('@')[0];
