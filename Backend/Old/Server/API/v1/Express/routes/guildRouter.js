@@ -2,7 +2,7 @@ import express from 'express';
 const router = express.Router();
 
 import auth from "../middleware/auth.js";
-import {GuildModel as Guild, ChannelModel as Channel, RoleModel as Role, BotModel as Bot} from '../../../Database/models/modelBarrel.js';
+import {GuildModel as Guild, ChannelModel as Channel, RoleModel as Role, BotModel as Bot} from '../../../../../Database/models/modelBarrel.js';
 import Axios from "axios";
 
 //permission shorthands

@@ -11,23 +11,22 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const PORT = env.PORT || 1337;
+const PORT = env.PORT || 5000;
 
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 //mongoose
 
-const uri = 'mongodb://localhost:27017';
-mongoose.createConnection(uri, {
+const uri = env.MONGODB_CONNECTION_STRING || 'mongodb://localhost:27017';
+mongoose.connect(uri, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
     useCreateIndex: true
 }, (err) => {
     if(err) throw err;
-}).then((connection) => {
-    console.log(connection.models)
-    console.log("MongoDB Connected")
-})
+    console.log("MongoDB Connected");
+    // console.log(models);
+});
 
 // import userRouter from "./routes/userRouter.js";
 // import botRouter from "./routes/botRouter.js";

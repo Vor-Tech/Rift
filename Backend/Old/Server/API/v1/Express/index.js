@@ -25,6 +25,7 @@ mongoose.connect(uri, {
 }, (err) => {
     if(err) throw err;
     console.log("MongoDB Connected");
+    // console.log(models);
 });
 
 import userRouter from "./routes/userRouter.js";

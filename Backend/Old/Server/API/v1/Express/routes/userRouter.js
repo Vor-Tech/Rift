@@ -36,7 +36,8 @@ export const authenticate = async (req, res) => {
 //register user
 router.post("/", async (req, res) => {
     try {
-        let { email, password, passwordCheck, displayName, icon } = req.body;
+        console.log(req.body)
+        let { email, password, displayName, icon } = req.body.data.user;
 
         //validate
 
@@ -44,7 +45,7 @@ router.post("/", async (req, res) => {
         if(existingUser) return res.status(400).json({msg: "An account with this email already exists."})
         if(!email || email?.split('@').length == 1) return res.status(400).json({msg: "Invalid Email"});
         if(!password) return res.status(400).json({msg: "No password was supplied"});
-        if(!passwordCheck || password !== passwordCheck) return res.status(400).json({msg: "Password check was not valid"});
+        // if(!passwordCheck || password !== passwordCheck) return res.status(400).json({msg: "Password check was not valid"});
         if(!displayName) displayName = email.split('@')[0];
         if(!icon) icon = (acronym) => displayName.split(' ').forEach(word_idx => acronym.push(word_idx[0]));
         if(password.length < 6) return res.status(400).json({msg: "Password must be at least 5 characters long"});

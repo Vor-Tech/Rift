@@ -1,7 +1,7 @@
 import express from 'express';
 const router = express.Router();
 
-import Channel from "../../../Database/models/channelModel.js";
+import Channel from "../../../../../Database/models/channelModel.js";
 
 router.post("/create", async (req,res) => {
     try {

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+console.log(mongoose);
 
 const userSchema = new mongoose.Schema({
     id: {type: String, required: true, unique: true},
