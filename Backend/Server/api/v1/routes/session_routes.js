@@ -1,4 +1,5 @@
 import express from 'express';
+import User from "../../../Database/models/userModel.js"
 const router = express.Router();
 
 // router.post("/", (req, res) => {

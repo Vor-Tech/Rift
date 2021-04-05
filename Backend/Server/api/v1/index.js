@@ -41,5 +41,5 @@ import userRouter from "./routes/user_router.js";
 // app.use("/guilds", guildRouter); //guild routes (wip)
 
 // app.use("/api/*", (q) => {console.log("hit"); console.log("Body:", q.body, '\nHeaders:', q.headers)});
-app.use("/api/session", sessionRouter);
-app.use("/api/users", userRouter);
+app.use("/api/v1/session", sessionRouter);
+app.use("/api/v1/users", userRouter);
