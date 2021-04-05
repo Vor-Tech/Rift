@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { NavLink } from 'react-router-dom';
 import Server from '../server';
 import Modal from 'react-modal';
@@ -21,18 +21,14 @@ function Servers(props) {
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [content, setContent] = useState('');
 
-    this.handleOpenModal = this.handleOpenModal.bind(this);
-    this.handleCloseModal = this.handleCloseModal.bind(this);
-    this.handleOpenSearchModal = this.handleOpenSearchModal.bind(this);
-    this.handleCloseSearchModal = this.handleCloseSearchModal.bind(this);
 
 
-  handleOpenModal = () => {
+  function handleOpenModal() {
     // this.setState({ showModal: true });
     setShowModal(true);
   }
 
-  handleCloseModal = () => {
+  function handleCloseModal() {
     setShowModal(true);
     setTimeout(() => setContent(''), 150);
     
@@ -40,17 +36,15 @@ function Servers(props) {
     
   }
 
-  handleOpenSearchModal = () => {
-    // this.setState({ showSearchModal: true });
+  function handleOpenSearchModal() {
     setShowSearchModal(true);
   }
 
-  handleCloseSearchModal = () => {
-    // this.setState({ showSearchModal: false });
+  function handleCloseSearchModal() {
     setShowSearchModal(false);
   }
 
-  updateContent = (type) => {
+  function updateContent(type) {
     setContent(type);
   }
 
@@ -59,12 +53,12 @@ function Servers(props) {
       <DmNotification
         key={idx}
         notification={notification}
-        user={this.props.users[idx]}
+        user={props.users[idx]}
       />
     );
   })
 
-  const servers = this.props.servers.map((server, idx) => {
+  const servers = props.servers?.map((server, idx) => {
     return <Server key={idx} server={server} />;
   });
 
@@ -75,7 +69,7 @@ function Servers(props) {
       content = <CreateServerForm
         createServer={props.createServer}
         closeModal={handleCloseModal}
-        errors={this.props.errors} />;
+        errors={props.errors} />;
     } else if (content === "join") {
       content = <JoinServerForm
         joinServer={props.joinServer}
@@ -84,18 +78,18 @@ function Servers(props) {
         currentUserId={props.currentUser.id}
       />;
     } else {
-      content = (
+      setContent(
         <div className="server-modal-content-wrapper">
           <div className="server-modal-content">
             <h3 className="create-server-header">OH, ANOTHER SERVER HUH?</h3>
             <div className="modal-create-join">
-              <div className="modal-create-server" onClick={() => this.updateContent('create')}>
+              <div className="modal-create-server" onClick={() => updateContent('create')}>
                 <h4>CREATE</h4>
                 <p>Create a new server and invite your friends. It's free!</p>
                 <div></div>
                 <button className="modal-create-button">Create a server</button>
               </div>
-              <div className="modal-join-server" onClick={() => this.updateContent('join')}>
+              <div className="modal-join-server" onClick={() => updateContent('join')}>
                 <h4>JOIN</h4>
                 <p>Enter a server name and join your friends server.</p>
                 <div></div>
@@ -118,19 +112,19 @@ function Servers(props) {
           position="right center"
           text="Home"
         />
-        <div className="friends-online">{`${this.props.onlineCount} Online`}</div>
+        <div className="friends-online">{`${props.onlineCount} Online`}</div>
         {dmNotifications}
         <div className="separator"></div>
         <div className="side-scroll-container">
           {servers}
           <button className="create-server"
             type="button"
-            onClick={this.handleOpenModal}
+            onClick={handleOpenModal}
           ><span>+</span></button>
           <Tooltip component={
             <button className="create-server"
               type="button"
-              onClick={this.handleOpenSearchModal}
+              onClick={handleOpenSearchModal}
             ><svg className="server-search" width="24" height="24" viewBox="0 0 18 18"><g fill="none" fillRule="evenodd"><path fill="currentColor" d="M3.60091481,7.20297313 C3.60091481,5.20983419 5.20983419,3.60091481 7.20297313,3.60091481 C9.19611206,3.60091481 10.8050314,5.20983419 10.8050314,7.20297313 C10.8050314,9.19611206 9.19611206,10.8050314 7.20297313,10.8050314 C5.20983419,10.8050314 3.60091481,9.19611206 3.60091481,7.20297313 Z M12.0057176,10.8050314 L11.3733562,10.8050314 L11.1492281,10.5889079 C11.9336764,9.67638651 12.4059463,8.49170955 12.4059463,7.20297313 C12.4059463,4.32933105 10.0766152,2 7.20297313,2 C4.32933105,2 2,4.32933105 2,7.20297313 C2,10.0766152 4.32933105,12.4059463 7.20297313,12.4059463 C8.49170955,12.4059463 9.67638651,11.9336764 10.5889079,11.1492281 L10.8050314,11.3733562 L10.8050314,12.0057176 L14.8073185,16 L16,14.8073185 L12.2102538,11.0099776 L12.0057176,10.8050314 Z"></path></g></svg></button>
           }
             position="right center"
@@ -139,7 +133,7 @@ function Servers(props) {
         </div>
         <Modal
           closeTimeoutMS={150}
-          isOpen={state.showModal}
+          isOpen={showModal}
           onRequestClose={handleCloseModal}
           style={{
             overlay: {
@@ -160,7 +154,7 @@ function Servers(props) {
           {content}
         </Modal>
         <Modal
-          isOpen={state.showSearchModal}
+          isOpen={showSearchModal}
           contentLabel="onRequestClose Example"
           onRequestClose={handleCloseSearchModal}
           closeTimeoutMS={150}

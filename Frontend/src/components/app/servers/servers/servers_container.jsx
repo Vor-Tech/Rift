@@ -18,7 +18,7 @@ const mapStateToProps = state => {
   });
   const currentUser = state.entities.users[state.session.id];
 
-  const servers = currentUser.servers.map(serverId => {
+  const servers = currentUser.servers?.map(serverId => {
     return state.entities.servers[serverId] || {};
   });
 
