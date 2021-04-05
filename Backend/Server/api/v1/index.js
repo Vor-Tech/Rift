@@ -28,13 +28,11 @@ mongoose.connect(uri, {
     // console.log(models);
 });
 
-// import userRouter from "./routes/userRouter.js";
-// import botRouter from "./routes/botRouter.js";
-// import channelRouter from "./routes/channelRouter.js";
-// import guildRouter from "./routes/guildRouter.js";
+//import routes
 import sessionRouter from "./routes/session_routes.js";
 import userRouter from "./routes/user_router.js";
-//routes
+
+//use routes
 // app.use("/users", userRouter); //user routes
 // app.use("/bots", botRouter); //bot routes (wip)
 // app.use("/channels", channelRouter); //channel routes (wip)

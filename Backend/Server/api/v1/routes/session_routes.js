@@ -1,4 +1,6 @@
 import express from 'express';
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import User from "../../../Database/models/userModel.js"
 const router = express.Router();
 
@@ -26,7 +28,7 @@ const router = express.Router();
 //login
 router.post("/", async (req, res) => {
     try {
-        const {email, password} = req.body;
+        const {email, password} = req.body.data.user;
         
         //validate
         if(!email) return res.status(400).json({msg: "No email was supplied"});

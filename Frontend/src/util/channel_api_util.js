@@ -7,7 +7,7 @@ export const createChannel = channel => (
 );
 
 export const createDmChannel = user_id => (
-  Axios.post('localhost:5000/api/v1/dm_channel_memberships',
+  Axios.post('localhost:5000/api/v1/direct_messages',
     {data: {dm_channel: { user_id }}}
   )
 );

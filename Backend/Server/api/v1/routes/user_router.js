@@ -1,38 +1,26 @@
 import express from 'express';
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+// import jwt from "jsonwebtoken";
 import User from "../../../Database/models/userModel.js"
 const router = express.Router();
 
 let userIncrement = 0
 
-// router.post("/", (req, res) => { //create user
-//     //req params:
-//     //  user_agent
-//     //  unknown:
-//     //      user_params
-
-//     //create new user
-//     //once user saved, login with new user
-//     //return user information and token
-// })
-
 router.post("/", async (req, res) => {
     try {
-        // console.log("HIT")
-        // console.log(req.body.data.user)
+        //derive body data
+        // console.log(req.body)
         let { email, password, username } = req.body.data.user;
 
         //validate
-
-        if(!email || email?.split('@').length == 1) return res.status(400).json({msg: "Invalid Email"});
-        const existingUser = await User.findOne({email: email});
-        if(existingUser) return res.status(400).json({msg: "An account with this email already exists."})
-        if(!password) return res.status(400).json({msg: "No password was supplied"});
-        // if(!passwordCheck || password !== passwordCheck) return res.status(400).json({msg: "Password check was not valid"});
-        if(!username) username = email.split('@')[0];
-        // if(!icon) icon = (acronym) => displayName.split(' ').forEach(word_idx => acronym.push(word_idx[0]));
-        if(password.length < 6) return res.status(400).json({msg: "Password must be at least 6 characters long"});
+            //check if email is valid    
+            if(!email || email?.split('@').length == 1) return res.status(400).json({msg: "Invalid Email"});
+            
+            const existingUser = await User.findOne({email: email});
+            if(existingUser) return res.status(422).json({msg: "An account with this email already exists."})
+            if(!password) return res.status(400).json({msg: "No password was supplied"});
+            if(!username) username = email.split('@')[0];
+            if(password.length < 6) return res.status(400).json({msg: "Password must be at least 6 characters long"});
 
         //crypt
         const salt = await bcrypt.genSalt();

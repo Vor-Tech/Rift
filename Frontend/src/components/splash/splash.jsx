@@ -54,13 +54,13 @@ class Splash extends React.Component {
           <div className="content ">
             <h1>It's time to ditch Discord.</h1>
             <p>
-              All-in-one voice and text chat for gamers that's free, secure, and works on both your desktop and phone. Stop
+              All-in-one voice and text chat for gamers that's free, open-source, secure, and works on both your desktop and phone. Stop
               paying
-              for TeamSpeak servers and hassling with Skype. Simplify your life.
+              for TeamSpeak servers and hassling with Skype, and worrying about Discord reliablity. Simplify your life.
             </p>
             <div className="buttons">
               <button className="downloadMac" onClick={this.handleLogin}>Try the Demo</button>
-              <a href="https://www.github.com/xero-lib" target="_blank" className="open-discors-top">About the Developer</a>
+              <a href="https://www.github.com/xero-lib" target="_blank" className="open-rift-top">Developers GitHub</a>
             </div>
           </div>
 
