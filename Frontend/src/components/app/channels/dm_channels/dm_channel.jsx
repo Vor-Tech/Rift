@@ -1,3 +1,4 @@
+import "../../../../assets/stylesheets/main.scss";
 import React from 'react';
 import { NavLink, withRouter } from 'react-router-dom';
 

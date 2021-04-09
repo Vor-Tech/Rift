@@ -5,6 +5,7 @@ import { RECEIVE_FRIENDS } from '../../actions/friends_actions';
 
 const usersReducer = (state = {}, action) => {
   Object.freeze(state);
+  console.log(action)
   let newState;
   switch (action.type) {
     case RECEIVE_CURRENT_USER_DATA:
@@ -25,9 +26,10 @@ const usersReducer = (state = {}, action) => {
 
       return newState;
     case RECEIVE_SERVER:
+      console.log(1234,state)
       newState = merge({}, state);
-      if (!newState[action.userId].servers.includes(action.server.id)) {
-        newState[action.userId].servers.push(action.server.id);
+      if (!newState[action.server.data.owner_id].servers.includes(action.server.data.id)) {
+        newState[action.server.data.owner_id].servers.push(action.server.data.id);
       } 
 
       return newState;

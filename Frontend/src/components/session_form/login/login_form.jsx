@@ -13,7 +13,7 @@ const LoginForm = (props) => {
   });
 
 
-  function handleSubmit(e) {
+  const handleSubmit = (e) => {
     e.preventDefault();
     props.login({email, password}).then(() => props.history.push('/channels/@me'));
   }
@@ -49,7 +49,7 @@ const LoginForm = (props) => {
               <div className="forgot-password-container">
                 {/* <button type="button" id="demo" onClick={loginAsGuest}>Demo User</button> */}
               </div>
-              <button id="session-submit">Login</button>
+              <button id="session-submit" onClick={() => handleSubmit}>Login</button>
               <div className="need-account">
                 <span>Need an account?</span>
                 <Link to="/register" onClick={() => props.removeErrors()}>Register</Link>

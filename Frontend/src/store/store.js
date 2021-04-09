@@ -10,4 +10,4 @@ const localConfigureStore = (preloadedState = {}) => (
   })
 );
 
-export default localConfigureStore;
+export default localConfigureStore ;

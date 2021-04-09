@@ -53,7 +53,7 @@ export const fetchMembers = (id) => dispatch => (
 
 export const createServer = (formData) => dispatch => (
   APIUtil.createServer(formData).then(server => (
-    dispatch(receiveServer(server, server.admin_id))
+    dispatch(receiveServer(server, server.owner_id))
   ), err => (
     dispatch(receiveErrors(err.responseJSON))
   ))

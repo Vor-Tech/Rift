@@ -1,3 +1,4 @@
+import "../../../assets/stylesheets/server_modal.scss"
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import Tooltip from '../modal/tooltip';

@@ -1,3 +1,4 @@
+import '../../assets/stylesheets/main.scss';
 import React from 'react';
 import Servers from './servers/servers/servers_container';
 import ServerRoute from './app_routes/server_route';
@@ -25,47 +26,47 @@ class AppRoot extends React.Component {
   componentDidMount() {
     document.body.style.overflow = "hidden";
 
-    this.notificationSubscription = App.cable.subscriptions.create(
-      { channel: "NotificationsChannel", userId: this.props.currentUser.id },
-      {
-        received: data => {
-          switch (data.type) {
-            case "message":
-              const channel = JSON.parse(data.channel);
-              const author = JSON.parse(data.user);
-              const notification = { channelId: channel.id, authorId: author.id };
+    // this.notificationSubscription = App?.cable.subscriptions.create(
+    //   { channel: "NotificationsChannel", userId: this.props.currentUser.id },
+    //   {
+    //     received: data => {
+    //       switch (data.type) {
+    //         case "message":
+    //           const channel = JSON.parse(data.channel);
+    //           const author = JSON.parse(data.user);
+    //           const notification = { channelId: channel.id, authorId: author.id };
 
-              if (this.props.location.pathname !== `/channels/@me/${channel.id}`) {
-                this.props.receiveChannel(channel);
-                this.props.receiveUser(author);
-                this.props.receiveDmNotification(notification);
-              }
+    //           if (this.props.location.pathname !== `/channels/@me/${channel.id}`) {
+    //             this.props.receiveChannel(channel);
+    //             this.props.receiveUser(author);
+    //             this.props.receiveDmNotification(notification);
+    //           }
 
-              break;
-            case "friend_request":
-              this.props.receiveUser(JSON.parse(data.user));
-              this.props.receiveFriendRequest(JSON.parse(data.friend_request));
+    //           break;
+    //         case "friend_request":
+    //           this.props.receiveUser(JSON.parse(data.user));
+    //           this.props.receiveFriendRequest(JSON.parse(data.friend_request));
 
-              break;
-            case "friend_request_destroy":
-              const request = JSON.parse(data.friend_request);
-              this.props.removeFriendRequest(request.id);
+    //           break;
+    //         case "friend_request_destroy":
+    //           const request = JSON.parse(data.friend_request);
+    //           this.props.removeFriendRequest(request.id);
 
-              break;
-            case "friend":
-              const user = JSON.parse(data.user);
-              this.props.receiveUser(user);
-              this.props.receiveFriend(user.id);
+    //           break;
+    //         case "friend":
+    //           const user = JSON.parse(data.user);
+    //           this.props.receiveUser(user);
+    //           this.props.receiveFriend(user.id);
 
-              break;
-            case "friend_destroy":
-              this.props.removeFriend(JSON.parse(data.user_id));
+    //           break;
+    //         case "friend_destroy":
+    //           this.props.removeFriend(JSON.parse(data.user_id));
 
-              break;
-          }
-        },
-      }
-    );
+    //           break;
+    //       }
+    //     },
+    //   }
+    // );
 
     this.props.fetchCurrentUserData().then(() => {
       this.setState({ loading: 'ready' });
@@ -79,9 +80,9 @@ class AppRoot extends React.Component {
     });
   }
 
-  componentWillUnmount() {
-    this.notificationSubscription.unsubscribe();
-  }
+  // componentWillUnmount() {
+  //   this.notificationSubscription.unsubscribe();
+  // }
 
   render() {
     const { loading } = this.state;

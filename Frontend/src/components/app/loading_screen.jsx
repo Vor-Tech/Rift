@@ -1,4 +1,5 @@
 import React from 'react';
+import '../../assets/stylesheets/loading.scss';
 
 const LoadingScreen = (props) => {
   return (

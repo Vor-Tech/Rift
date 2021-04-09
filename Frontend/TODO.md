@@ -1,6 +1,7 @@
 - [ ] Integrate discors
     - [X] Replace Ajax with Axios
     - [X] Fix the API not being able to connect
+    - [ ] Replace AppCable with WebSockets
     - [ ] Convert all Class components into functional components
     - [ ] Consolidate current Redux into RTK
 - [X] Fix author being displayed twice (Depr)

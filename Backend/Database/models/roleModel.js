@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const roleSchema = new mongoose.Schema({
+export const role_schema = new mongoose.Schema({
   initiator: Object,
   name: {type: String, required: true},
   guild_id: {type: String, required: true},
@@ -16,6 +16,6 @@ const roleSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-const Role = mongoose.model('Role', roleSchema);
+const Role = mongoose.model('Role', role_schema);
 
 export default Role; 

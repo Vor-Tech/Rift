@@ -1,4 +1,5 @@
 import React from 'react';
+import "../../../assets/stylesheets/friends.scss";
 import { withRouter } from 'react-router-dom';
 import { intersection } from 'lodash';
 import Tooltip from '../modal/tooltip';

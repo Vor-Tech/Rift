@@ -6,6 +6,8 @@ import {
 
 export default (state = [], action) => {
   Object.freeze(state);
+  console.log("Session Errors Reducer state:",state);
+  console.log("Session Errors Reducer action:",action);
   switch (action.type) {
     case RECEIVE_SESSION_ERRORS:
       return action.errors;

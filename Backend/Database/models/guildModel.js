@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const guildSchema = new mongoose.Schema({
+export const guild_schema = new mongoose.Schema({
   id: String,
   owner_id: String,
   name: String,
@@ -23,6 +23,6 @@ const guildSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-const Guild = mongoose.model('Guild', guildSchema);
+const Guild = mongoose.model('Guild', guild_schema);
 
 export default Guild;

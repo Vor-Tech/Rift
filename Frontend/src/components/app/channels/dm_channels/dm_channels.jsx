@@ -1,3 +1,6 @@
+import "../../../../assets/stylesheets/main.scss";
+import "../../../../assets/stylesheets/edge.scss";
+import "../../../../assets/stylesheets/firefox.scss";
 import React from 'react';
 import DmChannel from './dm_channel';
 import UserBar from '../user_bar/user_bar_container';

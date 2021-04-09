@@ -62,42 +62,42 @@ class Chat extends React.Component {
     }
   }
 
-  subscribe(channelId) {
-    this.subscription = App.cable.subscriptions.subscriptions.find((subscription) => (
-      subscription.identifier === `{"channel":"ChatChannel","channelId":"${channelId}"}`
-    ));
+   subscribe(channelId) {
+     this.subscription = App.cable.subscriptions.subscriptions.find((subscription) => (
+       subscription.identifier === `{"channel":"ChatChannel","channelId":"${channelId}"}`
+     ));
 
-    if (this.subscription) {
-      this.subscription.load({ channelId });
-    } else {
-      const that = this;
-      this.subscription = App.cable.subscriptions.create(
-        { channel: "ChatChannel", channelId },
-        {
-          received: data => {
-            switch (data.type) {
-              case "message":
-                this.scrolled = false;
-                this.parseNewMessage(data.message);
-                break;
-              case "messages":
-                this.scrolled = false;
-                this.messagesLoaded = true;
-                this.setState({ messages: this.parseMessages(data.messages) });
-                break;
-              case "error":
-                const server = that.props.server;
-                that.props.removeChannel(channelId);
-                that.props.history.push(`/channels/${server.id}/${server.root_channel}`);
-                break;
-            }
-          },
-          speak: function (data) { return this.perform("speak", data); },
-          load: function (data) { return this.perform("load", data); }
-        }
-      );
-    }
-  }
+     if (this.subscription) {
+       this.subscription.load({ channelId });
+     } else {
+       const that = this;
+       this.subscription = App.cable.subscriptions.create(
+         { channel: "ChatChannel", channelId },
+         {
+           received: data => {
+             switch (data.type) {
+               case "message":
+                 this.scrolled = false;
+                 this.parseNewMessage(data.message);
+                 break;
+               case "messages":
+                 this.scrolled = false;
+                 this.messagesLoaded = true;
+                 this.setState({ messages: this.parseMessages(data.messages) });
+                 break;
+               case "error":
+                 const server = that.props.server;
+                 that.props.removeChannel(channelId);
+                 that.props.history.push(`/channels/${server.id}/${server.root_channel}`);
+                 break;
+             }
+           },
+           speak: function (data) { return this.perform("speak", data); },
+           load: function (data) { return this.perform("load", data); }
+         }
+       );
+     }
+   }
 
   componentWillUnmount() {
     if (this.subscription) this.subscription.unsubscribe();

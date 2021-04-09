@@ -31,6 +31,7 @@ mongoose.connect(uri, {
 //import routes
 import sessionRouter from "./routes/session_routes.js";
 import userRouter from "./routes/user_router.js";
+import guildRouter from "./routes/guild_router.js";
 
 //use routes
 // app.use("/users", userRouter); //user routes
@@ -41,3 +42,4 @@ import userRouter from "./routes/user_router.js";
 // app.use("/api/*", (q) => {console.log("hit"); console.log("Body:", q.body, '\nHeaders:', q.headers)});
 app.use("/api/v1/session", sessionRouter);
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/guilds", guildRouter);

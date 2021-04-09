@@ -4,6 +4,8 @@ import { RECEIVE_CURRENT_USER_DATA } from '../../actions/session_actions';
 
 const voiceChannelsReducer = (state = {}, action) => {
   Object.freeze(state);
+  console.log("Voice Channel Reducer state:",state);
+  console.log("Voice Channel Reducer action:",action);
   switch (action.type) {
     case RECEIVE_CURRENT_USER_DATA:
       return action.currentUserData.voice_channels || {};

@@ -23,29 +23,7 @@ class Splash extends React.Component {
           <nav className="splash-nav">
             <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" className="discorLogo" alt=""></img>
             <ul className="rightNav">
-              <li>
-                <a href="https://github.com/jeffdeliso" target="_blank">
-                  <i className="fab fa-github"></i>
-                </a>
-              </li>
-              <li>
-                <a href="https://www.linkedin.com/in/jdeliso/" target="_blank">
-                  <i className="fab fa-linkedin"></i>
-                </a>
-              </li>
-              <li>
-                <a href="https://angel.co/jeffreydeliso" target="_blank">
-                  <i className="fab fa-angellist"></i>
-                </a>
-              </li>
-              <li>
-                <a href="https://www.jeffdeliso.com" target="_blank">
-                  <i className="fas fa-user-circle"></i>
-                </a>
-              </li>
-              <li>
                 <Link to="/login" className="openButton">{this.props.currentUserId ? 'Open' : 'Login'}</Link>
-              </li>
             </ul>
           </nav>
         </header>

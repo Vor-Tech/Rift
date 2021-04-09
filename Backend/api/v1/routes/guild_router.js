@@ -1,4 +1,5 @@
 import express from 'express';
+import Guild from "../../../Database/models/guildModel.js";
 const router = express.Router();
 
 router.post("/join", (req, res) => {
@@ -15,7 +16,10 @@ router.post("/join", (req, res) => {
 
     //resolve server id to server => server
     //if server: 
-    //  current_user.server_memberships.create(server_id: server.id)
+    //  current_user.servers = {
+    //    ...current_user.servers,
+    //    server
+    // }
     //  return the newly joined server object
     //else: return server does not exist 404
 });
@@ -23,7 +27,7 @@ router.post("/join", (req, res) => {
 router.get("/:id/members", (req, res) => {
     let action = "get members";
     console.log(`${action}:`, req);
-    return res.status(422).json({msg: action});
+    return res.status(202).json({msg: action});
     //req params:
     //  server_id,
     //  current_user
@@ -45,10 +49,23 @@ router.get("/", (req, res) => { //index
     //return servers 200
 });
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
     let action = "create server";
-    console.log(`${action}:`, req);
-    return res.status(422).json({msg: action});
+    console.log(`${action}:`, req.body.data);
+    const { name , current_user_id} = req.body.data;
+    // if(current_user) {}
+
+    let newGuild = new Guild({name: name, owner_id: current_user_id});
+    let savedGuild = await newGuild.save();    
+    return res.status(200).json({
+      owner_id: savedGuild.owner_id,
+      id: savedGuild._id,
+      name: savedGuild.name,
+      channels: savedGuild.channels,
+      roles: savedGuild.roles,
+      confirm: true
+    });
+
     //req params:
     //  current_user
     //  server_params: {
@@ -76,3 +93,5 @@ private
     params.require(:server).permit(:name, :icon)
   end
 */
+
+export default router;

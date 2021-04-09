@@ -3,6 +3,8 @@ import { RECEIVE_VOICE_CHANNEL } from '../../actions/voice_channel_actions';
 
 export default (state = [], action) => {
   Object.freeze(state);
+  console.log("Channel Errors Reducer state:",state);
+  console.log("Channel Errors Reducer action:",action);
   switch (action.type) {
     case RECEIVE_CHANNEL_ERRORS:
       return action.errors;

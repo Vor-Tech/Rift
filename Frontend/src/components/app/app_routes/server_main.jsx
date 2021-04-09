@@ -1,3 +1,4 @@
+import "../../../assets/stylesheets/main.scss";
 import React from 'react';
 import Header from '../header/header/header_container';
 import Chat from '../chat/chat/chat_container';

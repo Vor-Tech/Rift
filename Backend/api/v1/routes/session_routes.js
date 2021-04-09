@@ -49,6 +49,7 @@ router.post("/", async (req, res) => {
                     displayName: user.displayName,
                     discriminator: user.discriminator,
                     email: user.email,
+                    servers: user.guilds || []
                 },
             });
         }

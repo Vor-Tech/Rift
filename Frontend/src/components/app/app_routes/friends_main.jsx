@@ -1,3 +1,4 @@
+import "../../../assets/stylesheets/friends.scss";
 import React from 'react';
 import FriendsHeader from '../friends/friends_header';
 import Friends from '../friends/friends_list/friends_container';

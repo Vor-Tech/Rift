@@ -207,7 +207,7 @@
 
 .accept-friend {
   background-color: #2f3136;
-  background-image: image_url('main/check.svg');
+  background-image: image_url('../images/main/check.svg');
   background-position: 50%;
   background-repeat: no-repeat;
   background-size: 24px;
@@ -228,7 +228,7 @@
     
 .reject-friend {
   background-color: #2f3136;
-  background-image: image_url('main/friend-x.svg');
+  background-image: image_url('../images/main/friend-x.svg');
   background-position: 50%;
   background-repeat: no-repeat;
   background-size: 24px;
@@ -245,7 +245,7 @@
     
 .remove-friend {
   background-color: #2f3136;
-  background-image: image_url('main/x-user.svg');
+  background-image: image_url('../images/main/x-user.svg');
   background-position: 50%;
   background-repeat: no-repeat;
   background-size: 24px;
@@ -312,7 +312,7 @@
   position: relative;
   margin-right: 6px;
   flex-shrink: 0;
-  background-image: image_url('main/blue.png');
+  background-image: image_url('../images/main/blue.png');
 }
 
 .mutual-servers-container {
@@ -374,15 +374,15 @@
 }
 
 .online {
- background-image: image_url('main/online-empty.svg');
+ background-image: image_url('../images/main/online-empty.svg');
 }
 
 .pending {
-  background-image: image_url('main/pending-empty.svg');
+  background-image: image_url('../images/main/pending-empty.svg');
 }
 
 .no-friends {
-  background-image: image_url('main/friendless.svg');
+  background-image: image_url('../images/main/friendless.svg');
 }
 
 .empty-container {

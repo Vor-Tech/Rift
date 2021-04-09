@@ -1,3 +1,4 @@
+import "../../../../assets/stylesheets/main.scss";
 import React from 'react';
 import Modal from 'react-modal';
 import Tooltip from '../../modal/tooltip';

@@ -5,7 +5,7 @@ export const login = user => (
 );
 
 export const fetchCurrentUserData = () => (
-  Axios.get('localhost:5000/api/v1/users/data')
+  Axios.get('http://localhost:5000/api/v1/users/data').then((res) => res.data)
 );
 
 export const signup = user => (
@@ -13,11 +13,11 @@ export const signup = user => (
 );
 
 export const logout = () => (
-  Axios.delete('localhost:5000/api/v1/session')
+  Axios.delete('http://localhost:5000/api/v1/session')
 );
 
 export const editUser = (formData) => (
-  Axios.patch(`localhost:5000/api/v1/users/${formData.get('user[id]')}`,
+  Axios.patch(`http://localhost:5000/api/v1/users/${formData.get('user[id]')}`,
     {
       data: formData,
       contentType: false,
