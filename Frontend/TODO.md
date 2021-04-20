@@ -4,6 +4,7 @@
     - [ ] Replace AppCable with WebSockets
     - [ ] Convert all Class components into functional components
     - [ ] Consolidate current Redux into RTK
+- [ ] Implement Matrix support
 - [X] Fix author being displayed twice (Depr)
 - [X] Disable message board on logout (Depr)
 - [ ] Context menu
