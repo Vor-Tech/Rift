@@ -27,7 +27,8 @@ export const userSchema = new mongoose.Schema({
       }], required: false},
     badges: {type: [Object]},
     achievements: {type: [Object], required: false},
-    linkedAccounts: {type: [Object]}
+    linkedAccounts: {type: [Object]},
+    passwordResetsRequests: {type: Number}
 });
 
 const User = mongoose.model("User", userSchema);

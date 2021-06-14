@@ -5,11 +5,36 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import auth from "../middleware/auth.js";
 
+import nodemailer from "nodemailer"
+
 import User from "../../../Database/models/userModel.js";
 import FriendRequest from "../../../Database/models/friendRequestModel.js";
 
 let userIncrement = 0;
 
+let testAccount=await nodemailer.createTestAccount()
+
+let serverEmail = nodemailer.createTransport({
+    host: "smtp.ethereal.email",
+    port: 587,
+    secure: false, // true for 465, false for other ports
+    auth:{
+        user:testAccount.user,
+        pass:testAccount.pass
+    }
+})
+let info = await serverEmail.sendMail({
+    from: '"Fred Foo 👻" <foo@example.com>', // sender address
+    to: "jojoho70@gmail.com", // list of receivers
+    subject: "Hello ✔", // Subject line
+    text: "Hello world?", // plain text body
+    html: "<b>Hello world?</b>", // html body
+  });
+  console.log("Message sent: %s", info.messageId);
+  // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+
+  // Preview only available when sending through an Ethereal account
+  console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 router.post("/register", async (req, res) => {
     try {
         let { email, password, passwordCheck, displayName, icon } = req.body;
@@ -49,7 +74,8 @@ router.post("/register", async (req, res) => {
             password: passwordHash,
             displayName,
             discriminator,
-            created_at: new Date().toUTCString()
+            created_at: new Date().toUTCString(),
+            passwordResetsRequests: 0
         });
 
         //save new user to database
@@ -359,5 +385,22 @@ router.delete("/", auth, async (req, res) => {
         console.error(`[${new Date().toLocaleTimeString()}]`, err)
     }
 });
+//password reset needs two things  a request to reset and the actual reset paramater so this is going to be broken up in two 
+//functions
+router.get("/Password-Reset",async (req,res)=>{
+let email = req.email;
+//checks if there real
+if (email=null){
+    res.status(500).json({error:"invalid request"});
+}
+const isUserReal= await User.exists({email:email});
 
+if(isUserReal){
+user =await User.findOne({email:email});
+
+}else{
+    res.send("user not found")
+    res.status(400).json({error:"invalid email"});
+}
+})
 export default router;
