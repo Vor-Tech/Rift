@@ -1,8 +1,8 @@
 import express from "express";
 import mongoose from "mongoose";
-import cors  from "cors";
+import cors from "cors";
 
-import {default as env} from 'dotenv';
+import { default as env } from "dotenv";
 
 env.config();
 //express
@@ -17,21 +17,24 @@ app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 //mongoose
 
-const uri = env.MONGODB_CONNECTION_STRING || 'mongodb://localhost:27017';
-mongoose.connect(uri, {
+const uri = env.MONGODB_CONNECTION_STRING || "mongodb://localhost:27017";
+mongoose.connect(
+  uri,
+  {
     useUnifiedTopology: true,
     useNewUrlParser: true,
-    useCreateIndex: true
-}, (err) => {
-    if(err) throw err;
+    useCreateIndex: true,
+  },
+  (err) => {
+    if (err) throw err;
     console.log("MongoDB Connected");
-});
+  }
+);
 
 import userRouter from "./routes/userRouter.js";
 import botRouter from "./routes/botRouter.js";
 import channelRouter from "./routes/channelRouter.js";
 import guildRouter from "./routes/guildRouter.js";
-
 
 //routes
 app.use("/users", userRouter); //user routes
