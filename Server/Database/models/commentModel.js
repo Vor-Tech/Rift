@@ -1,22 +1,19 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-export const commentSchema = new mongoose.Schema(
-  {
-    author: Object,
-    content: Object,
-    parent: String,
-    children: Array,
-    reactions: [Object],
-    awards: [Object],
-    filteredRoles: Array,
-    createdAt: Date,
-    editedAt: [Date],
-  },
-  {
-    timestamps: true,
-  }
-);
+export const commentSchema = new mongoose.Schema({
+  author: Object,
+  content: Object,
+  parent: String,
+  children: Array,
+  reactions: [Object],
+  awards: [Object],
+  filteredRoles: Array,
+  createdAt: Date,
+  editedAt: [Date]
+}, {
+  timestamps: true,
+});
 
-const Comment = mongoose.model("Comment", commentSchema);
+const Comment = mongoose.model('Comment', commentSchema);
 
-export default Comment;
+export default Comment; 
