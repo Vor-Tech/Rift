@@ -444,5 +444,22 @@ router.delete("/", auth, async (req, res) => {
     console.error(`[${new Date().toLocaleTimeString()}]`, err);
   }
 });
+//password reset needs two things  a request to reset and the actual reset paramater so this is going to be broken up in two 
+//functions
+router.get("/Password-Reset",async (req,res)=>{
+let email = req.email;
+//checks if there real
+if (email=null){
+    res.status(500).json({error:"invalid request"});
+}
+const isUserReal= await User.exists({email:email});
 
+if(isUserReal){
+user =await User.findOne({email:email});
+
+}else{
+    res.send("user not found")
+    res.status(400).json({error:"invalid email"});
+}
+})
 export default router;
