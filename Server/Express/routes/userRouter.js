@@ -23,13 +23,7 @@ let serverEmail = nodemailer.createTransport({
         pass:testAccount.pass
     }
 })
-let info = await serverEmail.sendMail({
-    from: '"Fred Foo 👻" <foo@example.com>', // sender address
-    to: "jojoho70@gmail.com", // list of receivers
-    subject: "Hello ✔", // Subject line
-    text: "Hello world?", // plain text body
-    html: "<b>Hello world?</b>", // html body
-  });
+
   console.log("Message sent: %s", info.messageId);
   // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 
@@ -455,8 +449,8 @@ if (email=null){
 const isUserReal= await User.exists({email:email});
 
 if(isUserReal){
-user =await User.findOne({email:email});
-
+let users =await User.find({email:email});
+users.passwordResetsRequests++;
 }else{
     res.send("user not found")
     res.status(400).json({error:"invalid email"});
