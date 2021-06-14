@@ -1,50 +1,53 @@
-import express from'express';
+import express from "express";
 const app = express();
-import path from 'path';
+import path from "path";
 
-const uri = 'mongodb://localhost:27017';
+const uri = "mongodb://localhost:27017";
 const port = 8080;
 
-import Message from '../../Database/models/messageModel.js';
-import mongoose from 'mongoose';
+import Message from "../../Database/models/messageModel.js";
+import mongoose from "mongoose";
 
-import http from 'http';
-import * as socketIo from 'socket.io';
+import http from "http";
+import * as socketIo from "socket.io";
 const server = http.createServer(app);
 const io = new socketIo.Server(server, {
   cors: {
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST']
-  }
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
 });
-
-
 
 mongoose.connect(uri, {
   useUnifiedTopology: true,
   useNewUrlParser: true,
-  useCreateIndex: true
+  useCreateIndex: true,
 });
 
-app.use(express.static(path.join(path.resolve(path.dirname('')), '..', 'client', 'build')));
+app.use(
+  express.static(
+    path.join(path.resolve(path.dirname("")), "..", "client", "build")
+  )
+);
 
-io.on('connection', (socket) => {
-  console.log('Connection');
-  Message.find().sort({createdAt: -1}).exec((err, messages) => {
-    if (err) return console.error(err);
+io.on("connection", (socket) => {
+  console.log("Connection");
+  Message.find()
+    .sort({ createdAt: -1 })
+    .exec((err, messages) => {
+      if (err) return console.error(err);
 
-    // Send the messages to the user.
-    socket.emit('init', messages);
-  });
+      // Send the messages to the user.
+      socket.emit("init", messages);
+    });
 
   // Listen to connected users for a new message.
-  socket.on('message', (msg) => {
+  socket.on("message", (msg) => {
     // Create a message with the content and the name of the user.
     const message = new Message({
       author: msg.author,
       channel_id: msg.channel_id,
       content: msg.content,
-      
     });
 
     // Save the message to the database.
@@ -53,10 +56,10 @@ io.on('connection', (socket) => {
     });
 
     // Notify all other users about a new message.
-    socket.broadcast.emit('push', msg);
+    socket.broadcast.emit("push", msg);
   });
 });
 
 server.listen(port, () => {
-  console.log('listening on *:' + port);
+  console.log("listening on:" + port);
 });
