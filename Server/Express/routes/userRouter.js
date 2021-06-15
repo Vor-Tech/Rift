@@ -5,30 +5,25 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import auth from "../middleware/auth.js";
 
-import nodemailer from "nodemailer"
+import nodemailer from "nodemailer";
 
-import User from "../../../Database/models/userModel.js";
-import FriendRequest from "../../../Database/models/friendRequestModel.js";
-
+import User from "../../Database/models/userModel.js";
+import FriendRequest from "../..//Database/models/friendRequestModel.js";
+import passwordReset from "../../Database/models/passwordReset.js";
+let host = "localhost:8000/users/password-reset/";
 let userIncrement = 0;
 
-let testAccount=await nodemailer.createTestAccount()
-
+let testAccount = await nodemailer.createTestAccount();
 let serverEmail = nodemailer.createTransport({
-    host: "smtp.ethereal.email",
-    port: 587,
-    secure: false, // true for 465, false for other ports
-    auth:{
-        user:testAccount.user,
-        pass:testAccount.pass
-    }
-})
+  host: "smtp.ethereal.email",
+  port: 587,
+  secure: false, // true for 465, false for other ports
+  auth: {
+    user: testAccount.user,
+    pass: testAccount.pass,
+  },
+});
 
-  console.log("Message sent: %s", info.messageId);
-  // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-
-  // Preview only available when sending through an Ethereal account
-  console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 router.post("/register", async (req, res) => {
   try {
     let { email, password, passwordCheck, displayName, icon } = req.body;
@@ -66,42 +61,41 @@ router.post("/register", async (req, res) => {
     //  ## user gen ##
     //  ##############
 
-        //generate id
-        let id = (Date.now() + process.pid + userIncrement);
+    //generate id
+    let id = Date.now() + process.pid + userIncrement;
 
-        //generate discriminator
-        let discriminator = Math.floor(Math.random()*90000) + 10000;
+    //generate discriminator
+    let discriminator = Math.floor(Math.random() * 90000) + 10000;
 
-        //create new user object
-        const newUser = new User({
-            id,
-            email,
-            password: passwordHash,
-            displayName,
-            discriminator,
-            created_at: new Date().toUTCString(),
-            passwordResetsRequests: 0
-        });
+    //create new user object
+    const newUser = new User({
+      id,
+      email,
+      password: passwordHash,
+      displayName,
+      discriminator,
+      created_at: new Date().toUTCString(),
+      passwordResetsRequests: 0,
+    });
 
-        //save new user to database
-        const savedUser = await newUser.save();
-        
-        //filter out sensitive information from response object
-        let resUser = {
-            id: savedUser.id,
-            email: savedUser.email,
-            displayName: savedUser.displayName,
-            discriminator: savedUser.discriminator,
-        };
+    //save new user to database
+    const savedUser = await newUser.save();
 
-        //send response
-        res.json(resUser);
-    }
-    catch (err) {
-        res.status(500).json({error: "Internal server error"});
-        console.error(`[${new Date().toLocaleTimeString()}]`, err);
-    }
-})
+    //filter out sensitive information from response object
+    let resUser = {
+      id: savedUser.id,
+      email: savedUser.email,
+      displayName: savedUser.displayName,
+      discriminator: savedUser.discriminator,
+    };
+
+    //send response
+    res.json(resUser);
+  } catch (err) {
+    res.status(500).json({ error: "Internal server error" });
+    console.error(`[${new Date().toLocaleTimeString()}]`, err);
+  }
+});
 
 router.post("/login", async (req, res) => {
   try {
@@ -376,12 +370,10 @@ router.delete("/:sender/relationships/:recipient", async (req, res) => {
   });
 
   if (senderUpdatedFriends.includes({ id: recipient }))
-    return res
-      .status(400)
-      .json({
-        msg: "Internal server error",
-        reason: "Recipient still in friends list",
-      });
+    return res.status(400).json({
+      msg: "Internal server error",
+      reason: "Recipient still in friends list",
+    });
 
   let resSen = User.findOneAndUpdate(
     { id: sender },
@@ -399,12 +391,10 @@ router.delete("/:sender/relationships/:recipient", async (req, res) => {
 
   if (!resSen || !resRec) {
     console.log(resSen + resSec);
-    return res
-      .status(400)
-      .json({
-        msg: "Internal server error.",
-        reason: "resSen or resRec missing",
-      });
+    return res.status(400).json({
+      msg: "Internal server error.",
+      reason: "resSen or resRec missing",
+    });
   }
   return res.status(200);
 });
@@ -438,22 +428,45 @@ router.delete("/", auth, async (req, res) => {
     console.error(`[${new Date().toLocaleTimeString()}]`, err);
   }
 });
-//password reset needs two things  a request to reset and the actual reset paramater so this is going to be broken up in two 
+//password reset needs two things  a request to reset and the actual reset parameter so this is going to be broken up in two
 //functions
-router.get("/Password-Reset",async (req,res)=>{
-let email = req.email;
-//checks if there real
-if (email=null){
-    res.status(500).json({error:"invalid request"});
-}
-const isUserReal= await User.exists({email:email});
 
-if(isUserReal){
-let users =await User.find({email:email});
-users.passwordResetsRequests++;
-}else{
-    res.send("user not found")
-    res.status(400).json({error:"invalid email"});
-}
-})
+router.get("/Password-Reset", async (req, res) => {
+  let email = req.email;
+  //checks if they're real
+  if ((email = null)) {
+    res.status(500).json({ error: "invalid request" });
+  }
+  const isUserReal = await User.exists({ email: email });
+
+  if (isUserReal) {
+    let users = await User.findOne({ email: email });
+    if (users.passwordResetsRequests < 5) {
+      users.passwordResetsRequests++;
+      const token = jwt.sign({ id: email }, process.env.JWT_SECRET);
+      let date = new Date();
+      let reset = new passwordReset({ date: date, jwt: token.toString() });
+      console.log(reset);
+      User.findOneAndUpdate({ email: email }, users);
+      await reset
+        .save()
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err));
+      let message = {
+        from: testAccount.user,
+        to: email,
+        subject: "Message title",
+        text: "your password reset",
+        html: `<a href=${host}${token}>Password Reset</a>`,
+      };
+      serverEmail.sendMail(message, (err) => {
+        console.log(err || "\0");
+      });
+    } else {
+      return res.status(400).json({ error: "to many requests" });
+    }
+  } else {
+    return res.status(400).json({ error: "invalid email" });
+  }
+});
 export default router;
