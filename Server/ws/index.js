@@ -2,16 +2,17 @@ import express from "express";
 const app = express();
 import path from "path";
 
-const uri = "mongodb://localhost:27017";
-const port = 8080;
-
-import Message from "../../Database/models/messageModel.js";
+import Message from "../Database/models/messageModel.js";
 import mongoose from "mongoose";
 
 import http from "http";
-import * as socketIo from "socket.io";
+import * as ws from "socket.io";
+
+const uri = "mongodb://localhost:27017";
+const port = 8080;
+
 const server = http.createServer(app);
-const io = new socketIo.Server(server, {
+const io = new ws.Server(server, {
   cors: {
     origin: "http://localhost:3000",
     methods: ["GET", "POST"],
@@ -61,5 +62,5 @@ io.on("connection", (socket) => {
 });
 
 server.listen(port, () => {
-  console.log("listening on:" + port);
+  console.log("listening on port " + port);
 });

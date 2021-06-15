@@ -2,7 +2,6 @@ import React, {useContext, useEffect, useRef, useState} from "react";
 import UserContext from "../../context/UserContext";
 
 // import config from "./config";
-// import io from "socket.io-client";
 
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
@@ -10,11 +9,12 @@ import Typography from "@material-ui/core/Typography";
 import BottomBar from "../layout/Messaging/BottomBar";
 import { ButtonBase } from "@material-ui/core";
 
+import "./Messager.css"
 
 
 export default function Messager() {
   
-  // const socket = useRef();
+  const socket = useRef(null);
 
   const {userData, setUserData} = useContext(UserContext);
   
@@ -25,38 +25,36 @@ export default function Messager() {
     chat.scrollTop = chat.scrollHeight;
   }
 
-  // useEffect(() => {
-  //   socket.current = io("http://localhost:8080");
-  //   socket.current.on('connect', () => {
-  //     console.log("Connection Established");
-  //   });
-  //   // Load the last 10 messages in the window.
-  //   socket.current.on("init", (msg) => {
-  //     let msgReversed = msg.reverse();
-  //     setChats((chat) => {
-  //       return [...chat, ...msgReversed];
-  //     });
-  //     scrollToBottom();
-  //   });
+  useEffect(() => {
+    socket.current = new WebSocket("ws://localhost:8080");
+    socket.current.onconnected = () => {
+      console.log("Connection Established");
+    };
+    // Load the last 10 messages in the window.
+    socket.current.addEventListener("init", (msg) => {
+      let msgReversed = msg.reverse();
+      setChats((chat) => {
+        return [...chat, ...msgReversed];
+      });
+      scrollToBottom();
+    });
 
     // Update the chat if a new message is broadcasted.
-    // socket.current.on("push", (msg) => {
-    //   console.log(2, msg);
-    //   setChats((chat) => {
-    //     console.log(3, chat);
-    //     return [...chat, msg]; 
-    //   });
-    //   scrollToBottom();
-    //  });
-    //  return socket.current.close()
-// }, [])
+    socket.current.addEventListener("push", (msg) => {
+      console.log(2, msg);
+      setChats((chat) => {
+        console.log(3, chat);
+        return [...chat, msg]; 
+      });
+      scrollToBottom();
+     });
+     return socket.current.close()
+}, [])
 
-// Save the message the user is typing in the input field.
 const handleContent=(event) =>{
   setContent(event.target.value);
 }
 
-//
 // function handleName(event) {
 //   setUserData(() => {
 //     if(!username) return {name: event.target.value}
@@ -75,25 +73,25 @@ const handleName = (event) => {
 const handleSubmit = async (event) => {
   // Prevent the form to reload the current page.
   event.preventDefault();
-  // socket.current = io("http://localhost:8080");
+  socket.current = new WebSocket("http://localhost:8080");
   // Send the new message to the server.
-  // socket.current.emit("message", {
-  //   author: {
-  //     displayName: userData.displayName,
-  //     discriminator: userData.discriminator,
-  //     id: userData.id
-  //   },
-  //   channel_id: 'testing',
-  //   content: [content],
-  // });
-  //clear input bar
+  socket.current.emit("message", {
+    author: {
+      displayName: userData.displayName,
+      discriminator: userData.discriminator,
+      id: userData.id
+    },
+    channel_id: 'testing',
+    content: [content],
+  });
+  // clear input bar
   setContent('');
 
   //Removed because double author
-  // setChats((chat) =>
-  //   // Update the chat with the user's message and remove the current message.
-  //   [...chat, { author: {displayName: userData.displayName}, content: event.target.value /*state.content*/}]
-  // );
+  setChats((chat) =>
+    // Update the chat with the user's message and remove the current message.
+    [...chat, { author: {displayName: userData.displayName}, content: event.target.value /*state.content*/}]
+  );
   
   scrollToBottom();
 }

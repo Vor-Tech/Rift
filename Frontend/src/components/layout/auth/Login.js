@@ -1,7 +1,9 @@
 import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import UserContext from "../../../context/UserContext";
+import { TextField } from "@material-ui/core";
 import Axios from "axios";
+import "./auth.scss"
 
 export default function Login() {
     const [email, setEmail] = useState();
@@ -26,28 +28,30 @@ export default function Login() {
 
     return (
         <div>
-            <h2 className="page">Login</h2>
+            <center><h2 className="page">Login</h2></center>
             
             <form onSubmit={submit}>
-                <div>
-                <label htmlFor="login-email" style={{paddingRight: '.5%'}}>Email</label>
-                    <input
+                <div className="input-box">
+                    <TextField
+                        label="Email"
+                        variant="outlined"
                         id="login-email"
                         type="email"
                         onChange={e => setEmail(e.target.value)}
                     />
                 </div>
-                <div style={{paddingTop: '1%'}}>
-                <label htmlFor="login-password" style={{paddingRight: '.5%'}}>Password</label>
-                    <input 
+
+                <div className="input-box">
+                    <TextField
+                        label="Password"
+                        variant="outlined"
                         id="login-password"
                         type="password"
                         onChange={e => setPassword(e.target.value)}
                     />
                 </div>
-                <div>
-                <input type="submit" value="Login" style={{paddingLeft: '1%', paddingTop: '1%'}} />
-                </div>
+
+                <center><input type="submit" value="Login" /></center>
             </form>
         </div>
     )

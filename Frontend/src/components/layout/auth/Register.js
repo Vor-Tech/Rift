@@ -1,7 +1,9 @@
 import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import UserContext from "../../../context/UserContext";
+import TextField from '@material-ui/core/TextField';
 import Axios from "axios";
+import "./auth.scss"
 
 export default function Register() {
     const [email, setEmail] = useState();
@@ -37,34 +39,52 @@ export default function Register() {
     
     return (
         <div>
-            <h2 className="page">Register</h2>
-            <form onSubmit={submit}>
-                
-                <label htmlFor="register-email">Email</label>
-                    <input
+            <center><h2 className="page">Register</h2></center>
+            <form onSubmit={submit}>                
+                <div className="input-box">
+                    <TextField
+                        label="Email"
+                        variant="outlined"
                         id="register-email"
-                        type="email"
+                        // get some regex for checking contents is an email or something
                         onChange={e => setEmail(e.target.value)}
+                        value={email}
                     />
-
-                <label htmlFor="register-display-name">Display Name</label>
-                    <input
+                </div>
+                
+                <div className="input-box">
+                    <TextField
+                        label="Username"
+                        variant="outlined"
                         id="register-display-name"
                         type="text"
                         onChange={e => setDisplayName(e.target.value)}
+                        value={displayName}
                     />
+                </div>
 
-                <label htmlFor="register-password">Password</label>
-                    <input 
+                <div className="input-box">
+                    <TextField 
+                        label="Password"
+                        variant="outlined"
                         id="register-password"
                         type="password"
                         onChange={e => setPassword(e.target.value)}
                     />
+                </div>
 
-                <input type="password" placeholder="Verify Password" onChange={e => setPasswordCheck(e.target.value)} />
+                <div className="input-box">       
+                    <TextField
+                        label="Confirm Password"
+                        variant="outlined"
+                        type="password"
+                        onChange={e => setPasswordCheck(e.target.value)}
+                    />
+                </div>
 
-                <input type="submit" value="Register"/>
-
+                <div>
+                    <center><input type="submit" value="Register"/></center>
+                </div>
             </form>
         </div>
     )

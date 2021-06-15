@@ -4,6 +4,7 @@ import UserContext from "../../../context/UserContext";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import InputBase from "@material-ui/core/InputBase";
+import TextField from '@material-ui/core/TextField';
 import Toolbar from "@material-ui/core/Toolbar";
 
 import ChatIcon from "@material-ui/icons/Chat";
@@ -74,7 +75,7 @@ export default function BottomBar(props) {
               inputProps={{ "aria-label": "name", "aria-readonly": true }}
               />
             ) : (
-              <InputBase
+              <TextField id="outlined-basic" label="Outlined" variant="outlined"
               value={'Name'}
               onChange={props.handleName}
               classes={{
