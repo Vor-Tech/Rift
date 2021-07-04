@@ -9,7 +9,7 @@ import nodemailer from "nodemailer";
 
 import User from "../../Database/models/userModel.js";
 import FriendRequest from "../..//Database/models/friendRequestModel.js";
-import passwordReset from "../../Database/models/passwordReset.js";
+import passwordReset from "../../Database/models/passwordResetModel.js";
 let host = "localhost:8000/users/password-reset/";
 let userIncrement = 0;
 
@@ -430,28 +430,29 @@ router.delete("/", auth, async (req, res) => {
 });
 //password reset needs two things  a request to reset and the actual reset parameter so this is going to be broken up in two
 //functions
-
-router.get("/Password-Reset", async (req, res) => {
+//if it is a bad request if it doesnt parse 400 if we can read the request and its parseable
+//sends 200 no matter what to ensure the response is going through but prevents brute forcing the email
+router.get("/Password-Reset/Request", async (req, res) => {
   let email = req.email;
   //checks if they're real
   if ((email = null)) {
     res.status(500).json({ error: "invalid request" });
   }
   const isUserReal = await User.exists({ email: email });
-
   if (isUserReal) {
     let users = await User.findOne({ email: email });
+    //the db will be setup to auto delete these
     if (users.passwordResetsRequests < 5) {
       users.passwordResetsRequests++;
       const token = jwt.sign({ id: email }, process.env.JWT_SECRET);
       let date = new Date();
-      let reset = new passwordReset({ date: date, jwt: token.toString() });
+      let reset = new passwordReset({ date: date, jwt: token.toString(), email: email });
       console.log(reset);
       User.findOneAndUpdate({ email: email }, users);
-      await reset
-        .save()
-        .then((res) => console.log(res))
-        .catch((err) => console.log(err));
+      let index = await reset
+          .save()
+          .then((res) => console.log(res))
+          .catch((err) => console.log(err));
       let message = {
         from: testAccount.user,
         to: email,
@@ -459,14 +460,37 @@ router.get("/Password-Reset", async (req, res) => {
         text: "your password reset",
         html: `<a href=${host}${token}>Password Reset</a>`,
       };
-      serverEmail.sendMail(message, (err) => {
+      await serverEmail.sendMail(message, (err) => {
         console.log(err || "\0");
       });
+      return res.status(200).json({ error: "went through" });
     } else {
-      return res.status(400).json({ error: "to many requests" });
+      return res.status(200).json({ error: "to many requests" });
     }
   } else {
-    return res.status(400).json({ error: "invalid email" });
+    return res.status(200).json({ error: "went through" });
   }
 });
+// Second part checking the JWT token and resetting the password
+router.get("/Password-Reset/:jwt", (req, res) => {
+  let jwt = req.params.jwt;
+  let password =req.password;
+  if (jwt == null) {
+    res.status(400).send("missing jwt");
+  }
+  let collection = passwordReset.findOne({jwt:jwt})
+  collection.then(doc => {
+    if (doc.length == 0) {
+      res.status(400).send("doesnt exist");
+    }
+    let email = doc.email
+    User.findOneAndUpdate({email:email},{password:password}).catch(err => {
+      res.status(500).json({ error: "db err" });
+      console.error(`[${new Date().toLocaleTimeString()}]`, err);
+    })
+  }).catch(err => {
+    res.status(500).json({ error: "Internal server error" });
+    console.error(`[${new Date().toLocaleTimeString()}]`, err);
+  })
+})
 export default router;
